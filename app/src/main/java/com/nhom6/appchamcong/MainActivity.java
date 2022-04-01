@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         DAO dao = new DAO();
 
-        SANPHAM sp = new SANPHAM("SP01","Áo sơ mi trắng",35000,"https://thuvienmuasam.com/uploads/default/original/2X/e/ebace14de8c553f414a830be6bb2b3c13a1194e6.jpeg");
+        SANPHAM sp = new SANPHAM("SP02","Áo sơ mi đen",35000,"https://thuvienmuasam.com/uploads/default/original/2X/e/ebace14de8c553f414a830be6bb2b3c13a1194e6.jpeg");
         dao.themSanPham(MainActivity.this,sp);
 
         botnavMain = findViewById(R.id.bnavMain);

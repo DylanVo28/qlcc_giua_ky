@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".Fragments.DialogSanPham"
+    >
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="39dp"
+        android:layout_y="319dp"
+        android:text="Đơn giá" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="290dp"
+        android:layout_height="wrap_content"
+        android:layout_x="65dp"
+        android:layout_y="52dp"
+        android:text="Thêm sản phẩm mới"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="53dp"
+        android:layout_y="266dp"
+        android:text="Tên" />
+
+    <EditText
+        android:id="@+id/edit_ten_sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="115dp"
+        android:layout_y="249dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Nhập tên" />
+
+    <Button
+        android:id="@+id/btn_save_sp"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:layout_x="31dp"
+        android:layout_y="373dp"
+        android:text="Tạo sản phẩm" />
+
+    <EditText
+        android:id="@+id/edit_gia_sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="114dp"
+        android:layout_y="306dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="0" />
+
+    <ImageView
+        android:id="@+id/img_sanpham"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="67dp"
+        android:layout_y="92dp"
+        tools:srcCompat="@tools:sample/avatars"
+
+        />
+
+    <Button
+        android:id="@+id/btn_select_img_sanpham"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="219dp"
+        android:layout_y="135dp"
+        android:text="select image" />
+
+    <ImageButton
+        android:id="@+id/delete_sp_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="267dp"
+        android:layout_y="372dp"
+        android:src="@android:drawable/ic_menu_delete" />
+
+</AbsoluteLayout>
