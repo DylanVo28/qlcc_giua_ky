@@ -5,43 +5,45 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
-import androidx.core.content.ContextCompat;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.StrictMode;
-import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.cloudinary.android.MediaManager;
+import com.cloudinary.android.callback.ErrorInfo;
+import com.cloudinary.android.callback.UploadCallback;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhom6.appchamcong.Database.DAO;
 import com.nhom6.appchamcong.Entity.SANPHAM;
 import com.nhom6.appchamcong.R;
 import com.nhom6.appchamcong.adapter.SanPhamAdapter;
+import com.nhom6.appchamcong.media.UploadImage;
+import com.nhom6.appchamcong.media.UriUtils;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class SanPhamFragment extends Fragment  implements View.OnClickListener {
 
@@ -52,6 +54,7 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
     private BottomSheetDialog dialog=null;
     private BottomSheetDialog dialogEdit=null;
     private static SanPhamFragment instance;
+    private Intent image=null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -87,14 +90,7 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
                 return false;
             }
         });
-//        lvSanphams.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position,
-//                                    long id) {
 //
-//                SANPHAM sp=sanphams.get(position);
-//            }
-//        });
 
 
         return view;
@@ -137,7 +133,7 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
 
             Uri uri=data.getData();
             Glide.with(getActivity()).load(uri).into(imgSanPham);
-
+            image=data;
         }
         if (requestCode == 101 && resultCode==Activity.RESULT_OK) {
             ImageView imgSanPham=dialogEdit.findViewById(R.id.img_sanpham);
@@ -146,10 +142,13 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
 
             Uri uri=data.getData();
             Glide.with(getActivity()).load(uri).into(imgSanPham);
+            image=data;
         }
     }
 
-
+    public Intent getImage(){
+        return image;
+    }
 
 
     @Override
@@ -167,23 +166,53 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
                     }
                 });
                 dialog.findViewById(R.id.btn_save_sp).setOnClickListener(new View.OnClickListener(){
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onClick(View view){
+                        verifyStoragePermissions(getActivity());
+                        image.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                        Uri fileUri=image.getData();
+                        String filePath=UriUtils.getPathFromUri(getContext(),fileUri);
+
                         EditText tensp=(EditText)dialog.findViewById(R.id.edit_ten_sp);
                         EditText giasp=(EditText) dialog.findViewById(R.id.edit_gia_sp);
                         String idsp=java.util.UUID.randomUUID().toString();
-                        SANPHAM sp=new SANPHAM(idsp,tensp.getText().toString(),
-                                Integer.parseInt(giasp.getText().toString()),
-                                "https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg");
-                        try {
-                            dao.themSanPham(getContext(),sp);
-                            Toast.makeText(getContext(), "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
-                            sanphams.add(sp);
-                            aa.notifyDataSetChanged();
-                            dialog.dismiss();
-                        }catch (Exception e){
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+
+                        MediaManager.get().upload(filePath).callback((UploadCallback)(new UploadCallback() {
+                            public void onSuccess(@Nullable String requestId, @Nullable Map resultData) {
+                                Log.d("onSuccess_onSuccess","onSuccess: "+resultData);
+                                SANPHAM sp=new SANPHAM(idsp,tensp.getText().toString(),
+                                        Integer.parseInt(giasp.getText().toString()), (String) resultData.get("secure_url"));
+                                dao.themSanPham(getContext(),sp);
+                                Toast.makeText(getContext(), "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                                sanphams.add(sp);
+                                aa.notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+
+                            public void onProgress(@Nullable String requestId, long bytes, long totalBytes) {
+                                Log.d("onProgress_onProgress","onProgress: "+totalBytes+" "+requestId+" "+bytes);
+
+                            }
+
+                            public void onReschedule(@Nullable String requestId, @Nullable ErrorInfo error) {
+                                Log.d("reschedule_reschedule","reschedule: "+error+" "+requestId);
+                            }
+
+                            public void onError(@Nullable String requestId, @Nullable ErrorInfo error) {
+                                Log.d("error_error","error: "+ error);
+
+                            }
+
+                            public void onStart(@Nullable String requestId) {
+                                Log.d("start_start","start: "+ requestId);
+
+                            }
+                        })).dispatch();
+
+
+
+
                     }
                 });
                 dialog.show();
@@ -197,5 +226,24 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
 
         }
 
+    }
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    public void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
     }
 }

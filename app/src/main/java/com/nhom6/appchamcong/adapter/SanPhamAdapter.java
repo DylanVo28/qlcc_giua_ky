@@ -29,17 +29,24 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.cloudinary.android.MediaManager;
+import com.cloudinary.android.callback.ErrorInfo;
+import com.cloudinary.android.callback.UploadCallback;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhom6.appchamcong.Database.DAO;
 import com.nhom6.appchamcong.Entity.SANPHAM;
 import com.nhom6.appchamcong.Fragments.SanPhamFragment;
 import com.nhom6.appchamcong.R;
+import com.nhom6.appchamcong.media.UriUtils;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class SanPhamAdapter extends BaseAdapter  {
     private Context context;
@@ -144,14 +151,46 @@ public class SanPhamAdapter extends BaseAdapter  {
                     @Override
                     public void onClick(View view) {
                         try{
-                            SANPHAM sp=new SANPHAM(m.getMaSP(),tensp.getText().toString(),
-                                    Integer.parseInt(giasp.getText().toString()),
-                                    "https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg");
-                            dao.suaSanPham(view.getContext(),sp);
-                            Toast.makeText(view.getContext(), "Sửa sản phẩm thành công", Toast.LENGTH_SHORT).show();
-                            sanphams= dao.getSanphams(view.getContext());
-                            notifyDataSetChanged();
-                            dialog.dismiss();
+                            SanPhamFragment.getInstance().verifyStoragePermissions(
+                                    SanPhamFragment.getInstance().getActivity());
+                            Intent image=SanPhamFragment.getInstance().getImage();
+                            Uri fileUri=image.getData();
+                            String filePath= UriUtils.getPathFromUri(view.getContext(),fileUri);
+                            MediaManager.get().upload(filePath).callback((UploadCallback)(new UploadCallback() {
+                                public void onSuccess(@Nullable String requestId, @Nullable Map resultData) {
+                                    SANPHAM sp=new SANPHAM(m.getMaSP(),tensp.getText().toString(),
+                                            Integer.parseInt(giasp.getText().toString()),
+                                            (String) resultData.get("secure_url"));
+                                    dao.suaSanPham(view.getContext(),sp);
+                                    Toast.makeText(view.getContext(), "Sửa sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                                    sanphams= dao.getSanphams(view.getContext());
+                                    notifyDataSetChanged();
+                                    dialog.dismiss();
+
+                                }
+
+                                public void onProgress(@Nullable String requestId, long bytes, long totalBytes) {
+                                    Log.d("onProgress_onProgress","onProgress: "+totalBytes+" "+requestId+" "+bytes);
+
+                                }
+
+                                public void onReschedule(@Nullable String requestId, @Nullable ErrorInfo error) {
+                                    Log.d("reschedule_reschedule","reschedule: "+error+" "+requestId);
+                                }
+
+                                public void onError(@Nullable String requestId, @Nullable ErrorInfo error) {
+                                    Log.d("error_error","error: "+ error);
+
+                                }
+
+                                public void onStart(@Nullable String requestId) {
+                                    Log.d("start_start","start: "+ requestId);
+
+                                }
+                            })).dispatch();
+
+
+
                         }catch(Exception e){
                             Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
 
