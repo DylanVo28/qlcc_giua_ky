@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.nhom6.appchamcong.Entity.CHITIETCHAMCONG;
 import com.nhom6.appchamcong.Entity.CONGNHAN;
 import com.nhom6.appchamcong.Entity.SANPHAM;
 
@@ -119,6 +120,7 @@ public class DAO {
 
         long rs = db.insert(CONGNHAN.TBLCONGNHAN,null,cv);
     }
+
     public boolean xoaCongNhan(Context context,CONGNHAN cn) {
         dbCHAMCONG = new DBCHAMCONG(context);
         SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
@@ -185,5 +187,59 @@ public class DAO {
             cursor.close();
         }
         return dsCongNhan;
+    }
+
+    public ArrayList<CHITIETCHAMCONG> getDsCtChamCong(Context context, String macc){
+        dbCHAMCONG = new DBCHAMCONG(context);
+        ArrayList<CHITIETCHAMCONG> dsCtChamCong = new ArrayList<>();
+        String sql = "SELECT MASP,SOTP,SOPP,TENSP,DONGIA,IMG FROM CHITIETCHAMCONG, SANPHAM "
+                +"WHERE CHITIETCHAMCONG.MASP = SANPHAM.MASP " +
+                "AND MACC = '"+macc+"'";
+        Cursor cursor = dbCHAMCONG.executeQuery(sql);
+        if (cursor.moveToFirst()){
+            do {
+                SANPHAM sp = new SANPHAM(
+                        cursor.getString(0),
+                        cursor.getString(3),
+                        cursor.getInt(4),
+                        cursor.getString(5));
+                CHITIETCHAMCONG ctcc = new CHITIETCHAMCONG(macc,sp,
+                        cursor.getInt(1),
+                        cursor.getInt(2));
+                dsCtChamCong.add(ctcc);
+            }while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dsCtChamCong;
+    }
+
+    public boolean themCtChamCong(Context context, CHITIETCHAMCONG ctcc){
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CHITIETCHAMCONG.MACC,ctcc.getMaCC());
+        cv.put(CHITIETCHAMCONG.MASP, ctcc.getMaSP());
+        cv.put(CHITIETCHAMCONG.SOTP, ctcc.getSoTP());
+        cv.put(CHITIETCHAMCONG.SOPP, ctcc.getSoPP());
+        long rs = db.insert(CHITIETCHAMCONG.TBLCHITIETCHAMCONG, null, cv);
+
+        return rs>0? true:false;
+    }
+
+    public boolean xoaCtChamCong(Context context,CHITIETCHAMCONG ctcc) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        return db.delete(CHITIETCHAMCONG.TBLCHITIETCHAMCONG,
+                "MACC=? AND MASP=?",new String[]{ctcc.getMaCC(),ctcc.getMaSP()}) > 0;
+    }
+
+    public int suaCtChamCong(Context context, CHITIETCHAMCONG ctcc){
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CHITIETCHAMCONG.SOTP, ctcc.getSoTP());
+        cv.put(CHITIETCHAMCONG.SOPP, ctcc.getSoPP());
+        return db.update(CHITIETCHAMCONG.TBLCHITIETCHAMCONG,cv,
+                "MACC=? AND MASP=?",new String[]{ctcc.getMaCC(),ctcc.getMaSP()});
     }
 }
