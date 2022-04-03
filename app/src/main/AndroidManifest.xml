@@ -14,6 +14,12 @@
         android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.APPCHAMCONG">
         <activity
+            android:name=".EditCongNhanActiviy"
+            android:exported="false" />
+        <activity
+            android:name=".AddCongNhanActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

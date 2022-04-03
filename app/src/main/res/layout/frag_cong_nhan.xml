@@ -1,15 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Fragments.CongNhanFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.appcompat.widget.Toolbar
+        style="@style/Theme.AppCompat.NoActionBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Công nhân"
-        android:textSize="25dp"
-        android:gravity="center"/>
-</FrameLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/txtTimkiem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Tìm kiếm công nhân..."
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/btnEnter"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="enter"
+                android:layout_weight="0">
+
+            </Button>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnAddCN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:src="@android:drawable/ic_menu_add"
+                />
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+    <ListView
+        android:id="@+id/lvDsCongNhan"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

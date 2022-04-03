@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.nhom6.appchamcong.Entity.CONGNHAN;
 import com.nhom6.appchamcong.Entity.SANPHAM;
 
 import java.sql.Array;
@@ -20,6 +21,8 @@ public class DAO {
 
     //Ví dụ truy vấn insert thêm 1 row vào table SANPHAM
     //Nếu thích làm kiểu viết hắn câu truy vấn TSQL ra string rồi execute thì dùng phương thức executeQuery và executeUpdate trong DBCHAMCONG
+
+    //Sản phẩm DAO
     public void themSanPham(Context context, SANPHAM sp){
         dbCHAMCONG = new DBCHAMCONG(context);
         SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
@@ -104,4 +107,83 @@ public class DAO {
     }
 
 
+    //Công nhân DAO
+    public void themCongNhan(Context context, CONGNHAN cn) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CONGNHAN.MACN, cn.getMaCN());
+        cv.put(CONGNHAN.HOCN, cn.getHoCN());
+        cv.put(CONGNHAN.TENCN, cn.getTenCN());
+        cv.put(CONGNHAN.PHANXUONG, cn.getPhanXuong());
+
+        long rs = db.insert(CONGNHAN.TBLCONGNHAN,null,cv);
+    }
+    public boolean xoaCongNhan(Context context,CONGNHAN cn) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        return db.delete(CONGNHAN.TBLCONGNHAN,CONGNHAN.MACN +"="+"'"+ cn.getMaCN()+"'",null) > 0;
+    }
+
+    public int suaCongNhan(Context context, CONGNHAN cn){
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CONGNHAN.HOCN, cn.getHoCN());
+        cv.put(CONGNHAN.TENCN, cn.getTenCN());
+        cv.put(CONGNHAN.PHANXUONG,cn.getPhanXuong());
+        return db.update(CONGNHAN.TBLCONGNHAN,cv,"MACN=?",new String[]{cn.getMaCN()});
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<CONGNHAN> searchCN(Context context, String search) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        ArrayList<CONGNHAN> dsCongNhan = new ArrayList<>();
+        try{
+            Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM "+ CONGNHAN.TBLCONGNHAN + " WHERE " +
+                    CONGNHAN.TENCN + " LIKE  '"+search+"%'");
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    String MACN = cursor.getString(cursor.getColumnIndex("MACN"));
+                    String HOCN = cursor.getString(cursor.getColumnIndex("HOCN"));
+                    String TENCN = cursor.getString(cursor.getColumnIndex("TENCN"));
+                    String PHANXUONG = cursor.getString(cursor.getColumnIndex("PHANXUONG"));
+
+                    CONGNHAN cn = new CONGNHAN(MACN,HOCN,TENCN,Integer.parseInt(PHANXUONG));
+
+                    dsCongNhan.add(cn);
+                    cursor.moveToNext();
+                }
+                cursor.close();
+                return dsCongNhan;
+            }
+        }catch(Exception e){
+
+        }
+        return null;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<CONGNHAN> getDSCongNhan(Context context) {
+        dbCHAMCONG=new DBCHAMCONG(context);
+        Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM CONGNHAN");
+        ArrayList<CONGNHAN> dsCongNhan = new ArrayList<CONGNHAN>();
+        int i = 0;
+        if (cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+            do {
+                String MACN = cursor.getString(cursor.getColumnIndex("MACN"));
+                String HOCN = cursor.getString(cursor.getColumnIndex("HOCN"));
+                String TENCN = cursor.getString(cursor.getColumnIndex("TENCN"));
+                String PHANXUONG = cursor.getString(cursor.getColumnIndex("PHANXUONG"));
+                dsCongNhan.add(new CONGNHAN(MACN,HOCN,TENCN,Integer.parseInt(PHANXUONG)));
+                i++;
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dsCongNhan;
+    }
 }
