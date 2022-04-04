@@ -4,11 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class act_ctchamcong extends AppCompatActivity {
+public class ChiTietChamCongActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_act_ctchamcong);
+        setContentView(R.layout.act_ctchamcong);
     }
 }

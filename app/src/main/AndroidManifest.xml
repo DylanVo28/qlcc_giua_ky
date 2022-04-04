@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.APPCHAMCONG">
         <activity
-            android:name=".act_ctchamcong"
+            android:name=".ChiTietChamCongActivity"
             android:exported="false" />
         <activity
             android:name=".EditCongNhanActiviy"
