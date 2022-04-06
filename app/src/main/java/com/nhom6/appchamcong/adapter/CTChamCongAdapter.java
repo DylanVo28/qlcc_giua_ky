@@ -5,12 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhom6.appchamcong.ChiTietChamCongActivity;
+import com.nhom6.appchamcong.Database.DAO;
 import com.nhom6.appchamcong.Entity.CHITIETCHAMCONG;
 import com.nhom6.appchamcong.R;
 import com.squareup.picasso.Picasso;
@@ -65,16 +68,43 @@ public class CTChamCongAdapter extends BaseAdapter {
         viewHolder.btnSuaCtcc  = convertView.findViewById(R.id.btnSuaCtcc);
         convertView.setTag(viewHolder);
         setValues(viewHolder, dsCtcc.get(i));
-        setEvent(viewHolder.btnSuaCtcc);
+        setEvent(viewHolder.btnSuaCtcc,dsCtcc.get(i));
         return convertView;
     }
 
-    private void setEvent(ImageButton btnSuaCtcc) {
+    private void setEvent(ImageButton btnSuaCtcc, CHITIETCHAMCONG ctcc) {
         btnSuaCtcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 BottomSheetDialog dialog = new BottomSheetDialog(context);
+                dialog.setContentView(R.layout.dialog_sua_ctcc);
+                TextView txtTenSPSua = dialog.findViewById(R.id.txtTenSPSua);
+                EditText editSoTP = dialog.findViewById(R.id.editSoTP);
+                EditText editSoPP= dialog.findViewById(R.id.editSoPP);
+                ImageView imgSpSua= dialog.findViewById(R.id.imgSanPhamSua);
+                Button btnXacNhanSua =dialog.findViewById(R.id.btnXacNhanSua);
 
+                Picasso.get().load(ctcc.getSp().getImg()).into(imgSpSua);
+                txtTenSPSua.setText(ctcc.getSp().getTenSP());
+                editSoTP.setText(ctcc.getSoTP());
+                editSoPP.setText(ctcc.getSoPP());
+
+                btnXacNhanSua.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int soTP = Integer.parseInt(String.valueOf(editSoTP.getText()));
+                        int soPP = Integer.parseInt(String.valueOf(editSoPP.getText()));
+
+                        ctcc.setSoTP(soTP);
+                        ctcc.setSoPP(soPP);
+
+                        DAO dao = new DAO();
+                        dao.suaCtChamCong(context,ctcc);
+                        reload();
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
         });
     }
@@ -86,5 +116,11 @@ public class CTChamCongAdapter extends BaseAdapter {
         viewHolder.txtDonGia.setText(ctcc.getSp().getDonGia()+"đ");
         viewHolder.txtSoTP.setText(ctcc.getSoTP());
         viewHolder.txtSoPP.setText(ctcc.getSoPP());
+    }
+
+    public void reload(){
+        DAO dao = new DAO();
+        dsCtcc = dao.getDsCtChamCong(context,dsCtcc.get(0).getMaCC());
+        notifyDataSetChanged();
     }
 }
