@@ -9,10 +9,21 @@ public class CHITIETCHAMCONG {
 
     private String MaCC;
     private String MaSP;
+    private SANPHAM Sp;
     private int SoTP;
     private int SoPP;
+    private int TienCong;
 
     public CHITIETCHAMCONG() {
+    }
+
+    public CHITIETCHAMCONG(String maCC, SANPHAM sp, int soTP, int soPP) {
+        MaCC = maCC;
+        Sp = sp;
+        MaSP = sp.getMaSP();
+        SoTP = soTP;
+        SoPP = soPP;
+        TienCong = soTP * sp.getDonGia();
     }
 
     public CHITIETCHAMCONG(String maCC, String maSP, int soTP, int soPP) {
@@ -30,12 +41,12 @@ public class CHITIETCHAMCONG {
         MaCC = maCC;
     }
 
-    public String getMaSP() {
-        return MaSP;
+    public SANPHAM getSp() {
+        return Sp;
     }
 
-    public void setMaSP(String maSP) {
-        MaSP = maSP;
+    public void setSp(SANPHAM sp) {
+        this.Sp = sp;
     }
 
     public int getSoTP() {
@@ -52,5 +63,21 @@ public class CHITIETCHAMCONG {
 
     public void setSoPP(int soPP) {
         SoPP = soPP;
+    }
+
+    public String getMaSP() {
+        return MaSP;
+    }
+
+    public void setMaSP(String maSP) {
+        MaSP = maSP;
+    }
+
+    public int getTienCong() {
+        return TienCong;
+    }
+
+    public void setTienCong(int tienCong) {
+        TienCong = tienCong;
     }
 }

@@ -1,6 +1,8 @@
 package com.nhom6.appchamcong.Entity;
 
-public class CONGNHAN {
+import java.io.Serializable;
+
+public class CONGNHAN implements Serializable {
     public static final String TBLCONGNHAN = "CONGNHAN";
     public static final String MACN = "MACN";
     public static final String HOCN = "HOCN";

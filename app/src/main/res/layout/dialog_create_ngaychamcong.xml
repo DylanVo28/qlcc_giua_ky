@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".Fragments.DialogSanPham"
+    >
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="290dp"
+        android:layout_height="wrap_content"
+        android:layout_x="65dp"
+        android:layout_y="52dp"
+        android:text="Thêm ngày chấm công mới"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/edit_ngaycc"
+        android:layout_width="139dp"
+        android:layout_height="wrap_content"
+        android:layout_x="218dp"
+        android:layout_y="113dp"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="69dp"
+        android:layout_y="132dp"
+        android:text="Ngày chấm công" />
+
+    <ImageButton
+        android:id="@+id/delete_cc_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="306dp"
+        android:layout_y="204dp"
+        android:src="@android:drawable/ic_menu_delete" />
+
+    <Button
+        android:id="@+id/btn_save_ngaycc"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:layout_x="70dp"
+        android:layout_y="205dp"
+        android:text="Thêm  chấm công" />
+
+</AbsoluteLayout>

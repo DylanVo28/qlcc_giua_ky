@@ -6,6 +6,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.nhom6.appchamcong.Entity.CHAMCONG;
+import com.nhom6.appchamcong.Entity.CHITIETCHAMCONG;
+import com.nhom6.appchamcong.Entity.CONGNHAN;
 import com.nhom6.appchamcong.Entity.SANPHAM;
 
 import java.sql.Array;
@@ -20,6 +23,8 @@ public class DAO {
 
     //Ví dụ truy vấn insert thêm 1 row vào table SANPHAM
     //Nếu thích làm kiểu viết hắn câu truy vấn TSQL ra string rồi execute thì dùng phương thức executeQuery và executeUpdate trong DBCHAMCONG
+
+    //Sản phẩm DAO
     public void themSanPham(Context context, SANPHAM sp){
         dbCHAMCONG = new DBCHAMCONG(context);
         SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
@@ -104,4 +109,172 @@ public class DAO {
     }
 
 
+    //Công nhân DAO
+    public void themCongNhan(Context context, CONGNHAN cn) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CONGNHAN.MACN, cn.getMaCN());
+        cv.put(CONGNHAN.HOCN, cn.getHoCN());
+        cv.put(CONGNHAN.TENCN, cn.getTenCN());
+        cv.put(CONGNHAN.PHANXUONG, cn.getPhanXuong());
+
+        long rs = db.insert(CONGNHAN.TBLCONGNHAN,null,cv);
+    }
+
+    public boolean xoaCongNhan(Context context,CONGNHAN cn) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        return db.delete(CONGNHAN.TBLCONGNHAN,CONGNHAN.MACN +"="+"'"+ cn.getMaCN()+"'",null) > 0;
+    }
+
+    public int suaCongNhan(Context context, CONGNHAN cn){
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CONGNHAN.HOCN, cn.getHoCN());
+        cv.put(CONGNHAN.TENCN, cn.getTenCN());
+        cv.put(CONGNHAN.PHANXUONG,cn.getPhanXuong());
+        return db.update(CONGNHAN.TBLCONGNHAN,cv,"MACN=?",new String[]{cn.getMaCN()});
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<CONGNHAN> searchCN(Context context, String search) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        ArrayList<CONGNHAN> dsCongNhan = new ArrayList<>();
+        try{
+            Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM "+ CONGNHAN.TBLCONGNHAN + " WHERE " +
+                    CONGNHAN.TENCN + " LIKE  '"+search+"%'");
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    String MACN = cursor.getString(cursor.getColumnIndex("MACN"));
+                    String HOCN = cursor.getString(cursor.getColumnIndex("HOCN"));
+                    String TENCN = cursor.getString(cursor.getColumnIndex("TENCN"));
+                    String PHANXUONG = cursor.getString(cursor.getColumnIndex("PHANXUONG"));
+
+                    CONGNHAN cn = new CONGNHAN(MACN,HOCN,TENCN,Integer.parseInt(PHANXUONG));
+
+                    dsCongNhan.add(cn);
+                    cursor.moveToNext();
+                }
+                cursor.close();
+                return dsCongNhan;
+            }
+        }catch(Exception e){
+
+        }
+        return null;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<CONGNHAN> getDSCongNhan(Context context) {
+        dbCHAMCONG=new DBCHAMCONG(context);
+        Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM CONGNHAN");
+        ArrayList<CONGNHAN> dsCongNhan = new ArrayList<CONGNHAN>();
+        int i = 0;
+        if (cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+            do {
+                String MACN = cursor.getString(cursor.getColumnIndex("MACN"));
+                String HOCN = cursor.getString(cursor.getColumnIndex("HOCN"));
+                String TENCN = cursor.getString(cursor.getColumnIndex("TENCN"));
+                String PHANXUONG = cursor.getString(cursor.getColumnIndex("PHANXUONG"));
+                dsCongNhan.add(new CONGNHAN(MACN,HOCN,TENCN,Integer.parseInt(PHANXUONG)));
+                i++;
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dsCongNhan;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<CHAMCONG> getDSChamCong(Context context) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM CHAMCONG");
+        ArrayList<CHAMCONG> dsChamCong = new ArrayList<CHAMCONG>();
+        int i = 0;
+        if (cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+            do {
+                String MACC = cursor.getString(cursor.getColumnIndex("MACC"));
+                String NGAYCHAMCONG = cursor.getString(cursor.getColumnIndex("NGAYCHAMCONG"));
+                String MACN = cursor.getString(cursor.getColumnIndex("MACN"));
+                dsChamCong.add(new CHAMCONG(MACN,NGAYCHAMCONG,MACN));
+                i++;
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dsChamCong;
+    }
+
+    public ArrayList<CHITIETCHAMCONG> getDsCtChamCong(Context context, String macc){
+        dbCHAMCONG = new DBCHAMCONG(context);
+        ArrayList<CHITIETCHAMCONG> dsCtChamCong = new ArrayList<>();
+        String sql = "SELECT MASP,SOTP,SOPP,TENSP,DONGIA,IMG FROM CHITIETCHAMCONG, SANPHAM "
+                +"WHERE CHITIETCHAMCONG.MASP = SANPHAM.MASP " +
+                "AND MACC = '"+macc+"'";
+        Cursor cursor = dbCHAMCONG.executeQuery(sql);
+        if (cursor.moveToFirst()){
+            do {
+                SANPHAM sp = new SANPHAM(
+                        cursor.getString(0),
+                        cursor.getString(3),
+                        cursor.getInt(4),
+                        cursor.getString(5));
+                CHITIETCHAMCONG ctcc = new CHITIETCHAMCONG(macc,sp,
+                        cursor.getInt(1),
+                        cursor.getInt(2));
+                dsCtChamCong.add(ctcc);
+            }while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dsCtChamCong;
+    }
+
+    public boolean themCtChamCong(Context context, CHITIETCHAMCONG ctcc){
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CHITIETCHAMCONG.MACC,ctcc.getMaCC());
+        cv.put(CHITIETCHAMCONG.MASP, ctcc.getMaSP());
+        cv.put(CHITIETCHAMCONG.SOTP, ctcc.getSoTP());
+        cv.put(CHITIETCHAMCONG.SOPP, ctcc.getSoPP());
+        long rs = db.insert(CHITIETCHAMCONG.TBLCHITIETCHAMCONG, null, cv);
+
+        return rs>0? true:false;
+    }
+
+    public boolean xoaCtChamCong(Context context,CHITIETCHAMCONG ctcc) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        return db.delete(CHITIETCHAMCONG.TBLCHITIETCHAMCONG,
+                "MACC=? AND MASP=?",new String[]{ctcc.getMaCC(),ctcc.getMaSP()}) > 0;
+    }
+
+    public int suaCtChamCong(Context context, CHITIETCHAMCONG ctcc){
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CHITIETCHAMCONG.SOTP, ctcc.getSoTP());
+        cv.put(CHITIETCHAMCONG.SOPP, ctcc.getSoPP());
+        return db.update(CHITIETCHAMCONG.TBLCHITIETCHAMCONG,cv,
+                "MACC=? AND MASP=?",new String[]{ctcc.getMaCC(),ctcc.getMaSP()});
+    }
+
+
+    //Chấm công DAO
+    public void themChamCong(Context context, CHAMCONG cc) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CHAMCONG.MACN, cc.getMaCN());
+        cv.put(CHAMCONG.MACC, cc.getMaCC());
+        cv.put(CHAMCONG.NGAYCHAMCONG, cc.getNgayChamCong());
+
+        long rs = db.insert(CHAMCONG.TBLCHAMCONG,null,cv);
+    }
 }
