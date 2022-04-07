@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nhom6.appchamcong.AddChamCongActivity;
 import com.nhom6.appchamcong.AddCongNhanActivity;
 import com.nhom6.appchamcong.Database.DAO;
 import com.nhom6.appchamcong.Entity.CONGNHAN;
@@ -96,9 +97,11 @@ public class CongNhanFragment extends Fragment {
         lvCongNhan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                CONGNHAN cn = ((AdapterDSCongNhan) lvCongNhan.getAdapter()).getItem(i);
-                Toast.makeText(requireContext(), cn.getMaCN(), Toast.LENGTH_SHORT).show();
-
+                Intent intent = new Intent(getContext(), AddChamCongActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("MACNCT",dsCongNhan.get(i).getMaCN());
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
     }

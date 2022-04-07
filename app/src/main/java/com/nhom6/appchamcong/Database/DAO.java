@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.nhom6.appchamcong.Entity.CHAMCONG;
 import com.nhom6.appchamcong.Entity.CHITIETCHAMCONG;
 import com.nhom6.appchamcong.Entity.CONGNHAN;
 import com.nhom6.appchamcong.Entity.SANPHAM;
@@ -189,6 +190,27 @@ public class DAO {
         return dsCongNhan;
     }
 
+    @SuppressLint("Range")
+    public ArrayList<CHAMCONG> getDSChamCong(Context context) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM CHAMCONG");
+        ArrayList<CHAMCONG> dsChamCong = new ArrayList<CHAMCONG>();
+        int i = 0;
+        if (cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+            do {
+                String MACC = cursor.getString(cursor.getColumnIndex("MACC"));
+                String NGAYCHAMCONG = cursor.getString(cursor.getColumnIndex("NGAYCHAMCONG"));
+                String MACN = cursor.getString(cursor.getColumnIndex("MACN"));
+                dsChamCong.add(new CHAMCONG(MACN,NGAYCHAMCONG,MACN));
+                i++;
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dsChamCong;
+    }
+
     public ArrayList<CHITIETCHAMCONG> getDsCtChamCong(Context context, String macc){
         dbCHAMCONG = new DBCHAMCONG(context);
         ArrayList<CHITIETCHAMCONG> dsCtChamCong = new ArrayList<>();
@@ -241,5 +263,18 @@ public class DAO {
         cv.put(CHITIETCHAMCONG.SOPP, ctcc.getSoPP());
         return db.update(CHITIETCHAMCONG.TBLCHITIETCHAMCONG,cv,
                 "MACC=? AND MASP=?",new String[]{ctcc.getMaCC(),ctcc.getMaSP()});
+    }
+
+
+    //Chấm công DAO
+    public void themChamCong(Context context, CHAMCONG cc) {
+        dbCHAMCONG = new DBCHAMCONG(context);
+        SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CHAMCONG.MACN, cc.getMaCN());
+        cv.put(CHAMCONG.MACC, cc.getMaCC());
+        cv.put(CHAMCONG.NGAYCHAMCONG, cc.getNgayChamCong());
+
+        long rs = db.insert(CHAMCONG.TBLCHAMCONG,null,cv);
     }
 }
