@@ -12,6 +12,7 @@ public class CHITIETCHAMCONG {
     private SANPHAM Sp;
     private int SoTP;
     private int SoPP;
+    private int TienCong;
 
     public CHITIETCHAMCONG() {
     }
@@ -22,6 +23,7 @@ public class CHITIETCHAMCONG {
         MaSP = sp.getMaSP();
         SoTP = soTP;
         SoPP = soPP;
+        TienCong = soTP * sp.getDonGia();
     }
 
     public CHITIETCHAMCONG(String maCC, String maSP, int soTP, int soPP) {
@@ -69,5 +71,13 @@ public class CHITIETCHAMCONG {
 
     public void setMaSP(String maSP) {
         MaSP = maSP;
+    }
+
+    public int getTienCong() {
+        return TienCong;
+    }
+
+    public void setTienCong(int tienCong) {
+        TienCong = tienCong;
     }
 }
