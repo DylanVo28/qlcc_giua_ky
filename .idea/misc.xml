@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/TaiLieu/APPCHAMCONG/app/src/main/res/drawable/shadow_row_sanpham.xml" value="0.1" />
         <entry key="..\:/TaiLieu/APPCHAMCONG/app/src/main/res/layout/dialog_create_sanpham.xml" value="0.40217391304347827" />
         <entry key="..\:/TaiLieu/APPCHAMCONG/app/src/main/res/layout/frag_san_pham.xml" value="0.18911917098445596" />
         <entry key="..\:/TaiLieu/APPCHAMCONG/app/src/main/res/layout/row_sanpham.xml" value="0.40217391304347827" />

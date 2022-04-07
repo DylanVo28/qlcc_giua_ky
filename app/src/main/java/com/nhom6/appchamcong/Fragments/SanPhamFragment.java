@@ -156,7 +156,13 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
         switch (view.getId()){
             case R.id.create_san_pham_btn:{
                 dialog=new BottomSheetDialog(view.getContext());
+
                 dialog.setContentView(R.layout.dialog_create_sanpham);
+                ImageView imgDefault=(ImageView) dialog.findViewById(R.id.img_sanpham);
+                imgDefault.getLayoutParams().width=400;
+                imgDefault.getLayoutParams().height=400;
+                Glide.with(getActivity()).load("https://skillz4kidzmartialarts.com/wp-content/uploads/2017/04/default-image-620x600.jpg")
+                        .into(imgDefault);
                 dialog.findViewById(R.id.delete_sp_btn).setVisibility(View.GONE);
                 dialog.findViewById(R.id.btn_select_img_sanpham).setOnClickListener(new View.OnClickListener() {
                     @Override
