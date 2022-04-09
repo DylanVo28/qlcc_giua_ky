@@ -178,6 +178,9 @@ public class SanPhamFragment extends Fragment {
         if (type.equals("CREATE")) {
             startActivityForResult(intent, 100);
 
+            Uri uri = data.getData();
+            Glide.with(getActivity()).load(uri).into(imgSanPham);
+            image = data;
         }
         if (type.equals("EDIT")) {
             dialogEdit = dialog;
