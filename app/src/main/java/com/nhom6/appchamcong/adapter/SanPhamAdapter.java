@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
@@ -126,6 +127,7 @@ public class SanPhamAdapter extends BaseAdapter  {
                 Button saveSpBtn=(Button) dialog.findViewById(R.id.btn_save_sp);
                 Button selectImageBtn=(Button) dialog.findViewById(R.id.btn_select_img_sanpham);
                 ImageButton deleteSpBtn=(ImageButton) dialog.findViewById(R.id.delete_sp_btn);
+
                 saveSpBtn.setText("Lưu Sản Phẩm");
                 try {
 
@@ -134,35 +136,46 @@ public class SanPhamAdapter extends BaseAdapter  {
                     imgsp.requestLayout();
                     imgsp.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
-
                     URL url = new URL(m.getImg());
                     Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                     imgsp.setImageBitmap(bmp);
+
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-
                 tensp.setText(m.getTenSP());
                 giasp.setText(""+m.getDonGia());
+
+
                 saveSpBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         try{
                             SanPhamFragment.getInstance().verifyStoragePermissions(
                                     SanPhamFragment.getInstance().getActivity());
+
                             Intent image=SanPhamFragment.getInstance().getImage();
                             Uri fileUri=image.getData();
                             String filePath= UriUtils.getPathFromUri(view.getContext(),fileUri);
+
                             MediaManager.get().upload(filePath).callback((UploadCallback)(new UploadCallback() {
                                 public void onSuccess(@Nullable String requestId, @Nullable Map resultData) {
                                     SANPHAM sp=new SANPHAM(m.getMaSP(),tensp.getText().toString(),
                                             Integer.parseInt(giasp.getText().toString()),
                                             (String) resultData.get("secure_url"));
                                     dao.suaSanPham(view.getContext(),sp);
+
+                                    AbsoluteLayout al=dialog.findViewById(R.id.layout_dialog_sanpham);
+                                    al.setAlpha(1F);
+
+                                    LottieAnimationView animationView = dialog.findViewById(R.id.animationView);
+                                    animationView.setVisibility(View.GONE);
+
                                     Toast.makeText(view.getContext(), "Sửa sản phẩm thành công", Toast.LENGTH_SHORT).show();
+
                                     sanphams= dao.getSanphams(view.getContext());
                                     notifyDataSetChanged();
                                     dialog.dismiss();
@@ -186,6 +199,11 @@ public class SanPhamAdapter extends BaseAdapter  {
                                 public void onStart(@Nullable String requestId) {
                                     Log.d("start_start","start: "+ requestId);
 
+                                    LottieAnimationView animationView = dialog.findViewById(R.id.animationView);
+                                    animationView.setVisibility(View.VISIBLE);
+
+                                    AbsoluteLayout al=dialog.findViewById(R.id.layout_dialog_sanpham);
+                                    al.setAlpha(0.5F);
                                 }
                             })).dispatch();
 

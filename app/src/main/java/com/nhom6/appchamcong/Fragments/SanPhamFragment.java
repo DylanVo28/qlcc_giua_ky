@@ -20,11 +20,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsoluteLayout;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
@@ -34,16 +36,12 @@ import com.nhom6.appchamcong.Database.DAO;
 import com.nhom6.appchamcong.Entity.SANPHAM;
 import com.nhom6.appchamcong.R;
 import com.nhom6.appchamcong.adapter.SanPhamAdapter;
-import com.nhom6.appchamcong.media.UploadImage;
 import com.nhom6.appchamcong.media.UriUtils;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class SanPhamFragment extends Fragment  implements View.OnClickListener {
 
@@ -72,7 +70,8 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
         aa = new SanPhamAdapter(view.getContext(), sanphams);
 
         lvSanphams.setAdapter(aa);
- view.findViewById(R.id.create_san_pham_btn).setOnClickListener(this);
+
+        view.findViewById(R.id.create_san_pham_btn).setOnClickListener(this);
         EditText search_sp=(EditText) view.findViewById(R.id.search_sp_input);
         search_sp.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -123,10 +122,7 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
             return;
         }
         if (requestCode == 100 && resultCode==Activity.RESULT_OK) {
-                //Get image
-//                ImageView imgSanPham=dialog.findViewById(R.id.img_sanpham);
-//                Bitmap imgBitmap=(Bitmap) data.getExtras().get("data");
-//                imgSanPham.setImageBitmap(imgBitmap);
+
             ImageView imgSanPham=dialog.findViewById(R.id.img_sanpham);
             imgSanPham.getLayoutParams().width=400;
             imgSanPham.getLayoutParams().height=400;
@@ -163,6 +159,7 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
                 imgDefault.getLayoutParams().height=400;
                 Glide.with(getActivity()).load("https://skillz4kidzmartialarts.com/wp-content/uploads/2017/04/default-image-620x600.jpg")
                         .into(imgDefault);
+
                 dialog.findViewById(R.id.delete_sp_btn).setVisibility(View.GONE);
                 dialog.findViewById(R.id.btn_select_img_sanpham).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -190,6 +187,10 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
                                 SANPHAM sp=new SANPHAM(idsp,tensp.getText().toString(),
                                         Integer.parseInt(giasp.getText().toString()), (String) resultData.get("secure_url"));
                                 dao.themSanPham(getContext(),sp);
+                                AbsoluteLayout al=dialog.findViewById(R.id.layout_dialog_sanpham);
+                                al.setAlpha(1F);
+                                LottieAnimationView animationView = dialog.findViewById(R.id.animationView);
+                                animationView.setVisibility(View.GONE);
                                 Toast.makeText(getContext(), "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
                                 sanphams.add(sp);
                                 aa.notifyDataSetChanged();
@@ -212,7 +213,10 @@ public class SanPhamFragment extends Fragment  implements View.OnClickListener {
 
                             public void onStart(@Nullable String requestId) {
                                 Log.d("start_start","start: "+ requestId);
-
+                                LottieAnimationView animationView = dialog.findViewById(R.id.animationView);
+                                animationView.setVisibility(View.VISIBLE);
+                                AbsoluteLayout al=dialog.findViewById(R.id.layout_dialog_sanpham);
+                                al.setAlpha(0.5F);
                             }
                         })).dispatch();
 
