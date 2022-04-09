@@ -11,9 +11,28 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/toolbar"
-        app:menu="@menu/menu_ctcc_toolbar"
-        app:title="@string/title_ctcc" />
+        app:menu="@menu/menu_ctcc_toolbar">
 
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="match_parent"
+            android:onClick="back"
+            android:padding="5dp"
+            android:src="@drawable/ic_back_24" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_ctcc"
+            android:textColor="@color/black"
+            android:textSize="19dp"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="?android:attr/listDivider" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -106,4 +125,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
 </LinearLayout>

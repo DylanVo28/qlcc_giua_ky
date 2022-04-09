@@ -5,4 +5,6 @@
     <string name="title_ctcc">Chi tiết chấm công</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_chamcong">Danh sách các ngày chấm công</string>
+    <string name="title_themcongnhan">Thêm công nhân</string>
 </resources>

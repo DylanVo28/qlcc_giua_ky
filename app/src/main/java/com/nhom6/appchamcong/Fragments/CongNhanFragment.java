@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -40,9 +42,8 @@ public class CongNhanFragment extends Fragment {
     public static AdapterDSCongNhan adapterDSCongNhan;
     private static CongNhanFragment instance;
 
-    Button btnEnter;
     EditText txtTimkiem;
-    FloatingActionButton btnAddCN;
+    ImageView btnAddCN;
     int max;
     Integer requestCodeADD = 123;
 
@@ -59,7 +60,7 @@ public class CongNhanFragment extends Fragment {
 
         dsCongNhan = dao.getDSCongNhan(view.getContext());
 
-        adapterDSCongNhan = new AdapterDSCongNhan(CongNhanFragment.this,R.layout.item_cong_nhan, dsCongNhan);
+        adapterDSCongNhan = new AdapterDSCongNhan(CongNhanFragment.this, R.layout.item_cong_nhan, dsCongNhan);
         lvCongNhan.setAdapter(adapterDSCongNhan);
         return view;
     }
@@ -71,15 +72,20 @@ public class CongNhanFragment extends Fragment {
         setEvent();
     }
 
-    private  void setEvent() {
+    private void setEvent() {
         // Thêm sự kiện cho nút enter
-        btnEnter.setOnClickListener(new View.OnClickListener() {
+        txtTimkiem.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void onClick(View view) {
-                hideKeyboard(txtTimkiem);
-                ArrayList<CONGNHAN> searchDSCongNhan = dao.searchCN(getContext(), txtTimkiem.getText().toString());
-                dsCongNhan = searchDSCongNhan;
-                adapterDSCongNhan.changeDsCongNhan(dsCongNhan);
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (i == KeyEvent.KEYCODE_ENTER)) {
+                    hideKeyboard(txtTimkiem);
+                    ArrayList<CONGNHAN> searchDSCongNhan = dao.searchCN(getContext(), txtTimkiem.getText().toString());
+                    dsCongNhan = searchDSCongNhan;
+                    adapterDSCongNhan.changeDsCongNhan(dsCongNhan);
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -88,8 +94,8 @@ public class CongNhanFragment extends Fragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), AddCongNhanActivity.class);
                 max = getMaCNMax(dsCongNhan);
-                Bundle  bundle = new Bundle();
-                intent.putExtra("max", max+"");
+                Bundle bundle = new Bundle();
+                intent.putExtra("max", max + "");
                 startActivityForResult(intent, requestCodeADD);
             }
         });
@@ -98,16 +104,13 @@ public class CongNhanFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getContext(), AddChamCongActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("MACNCT",dsCongNhan.get(i).getMaCN());
-                intent.putExtras(bundle);
+                intent.putExtra("congnhan", dsCongNhan.get(i));
                 startActivity(intent);
             }
         });
     }
 
     private void setControl() {
-        this.btnEnter = getActivity().findViewById(R.id.btnEnter);
         this.txtTimkiem = getActivity().findViewById(R.id.txtTimkiem);
         this.btnAddCN = getActivity().findViewById(R.id.btnAddCN);
     }
@@ -120,7 +123,7 @@ public class CongNhanFragment extends Fragment {
     public int getMaCNMax(ArrayList<CONGNHAN> dsCongNhan) {
         String maCNGet;
         max = 0;
-        if(dsCongNhan.size()>0) {
+        if (dsCongNhan.size() > 0) {
             for (CONGNHAN congNhan : dsCongNhan) {
                 maCNGet = congNhan.getMaCN();
                 maCN.add(Integer.parseInt(maCNGet));
@@ -138,13 +141,12 @@ public class CongNhanFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == requestCodeADD && data != null)
-        {
+        if (requestCode == requestCodeADD && data != null) {
             dsCongNhan = dao.getDSCongNhan(getActivity().getBaseContext());
             adapterDSCongNhan.changeDsCongNhan(dsCongNhan);
         }
 
-        if (requestCode ==  2) {
+        if (requestCode == 2) {
             Log.d("result", "onActivityResult: ");
             dsCongNhan = dao.getDSCongNhan(getActivity().getBaseContext());
             adapterDSCongNhan.changeDsCongNhan(dsCongNhan);

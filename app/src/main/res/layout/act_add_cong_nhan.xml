@@ -5,23 +5,28 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="56dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="50dp">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/toolbar">
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="match_parent"
+            android:onClick="back"
+            android:padding="5dp"
+            android:src="@drawable/ic_back_24" />
 
         <TextView
-            android:textSize="25dp"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:layout_marginLeft="80dp"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Thêm công nhân">
-        </TextView>
-    </LinearLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_themcongnhan"
+            android:textColor="@color/black"
+            android:textSize="19dp"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -60,7 +65,9 @@
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:gravity="center"
-            android:hint="Họ công nhân"></EditText>
+            android:hint="Họ công nhân"
+            android:singleLine="true"
+            android:imeOptions="actionDone" />
     </LinearLayout>
 
     <LinearLayout
@@ -79,7 +86,9 @@
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:gravity="center"
-            android:hint="Tên công nhân"></EditText>
+            android:hint="Tên công nhân"
+            android:singleLine="true"
+            android:imeOptions="actionDone"/>
     </LinearLayout>
 
     <LinearLayout
@@ -100,7 +109,9 @@
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:gravity="center"
-            android:hint="Phân xưởng"></EditText>
+            android:hint="Phân xưởng"
+            android:singleLine="true"
+            android:imeOptions="actionDone"/>
     </LinearLayout>
 
     <LinearLayout

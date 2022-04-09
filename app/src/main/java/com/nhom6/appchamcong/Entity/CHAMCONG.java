@@ -1,13 +1,14 @@
 package com.nhom6.appchamcong.Entity;
 
-public class CHAMCONG {
+import java.io.Serializable;
+
+public class CHAMCONG implements Serializable {
     public static final String TBLCHAMCONG = "CHAMCONG";
     public static final String MACC = "MACC";
     public static final String NGAYCHAMCONG = "NGAYCHAMCONG";
     public static final String MACN = "MACN";
 
     private String MaCC;
-    // NgayChamCong có thể dùng simpleDateFormat để chuyển đổi qua lại giữa String và Date
     private String NgayChamCong;
     private String MaCN;
 

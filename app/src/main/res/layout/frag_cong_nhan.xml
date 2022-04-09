@@ -8,7 +8,6 @@
     tools:context=".Fragments.CongNhanFragment">
 
     <androidx.appcompat.widget.Toolbar
-        style="@style/Theme.AppCompat.NoActionBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/toolbar">
@@ -16,34 +15,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/txtTimkiem"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="Tìm kiếm công nhân..."
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/btnEnter"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="enter"
-                android:layout_weight="0">
-
-            </Button>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btnAddCN"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:src="@android:drawable/ic_menu_add"
-                />
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:layout_marginRight="10dp">
+                <EditText
+                    android:id="@+id/txtTimkiem"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Search công nhân"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
 
+            <ImageView
+                android:id="@+id/btnAddCN"
+                android:layout_width="35dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_add_24" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
+
     <ListView
         android:id="@+id/lvDsCongNhan"
         android:layout_width="match_parent"

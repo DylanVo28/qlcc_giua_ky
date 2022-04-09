@@ -35,7 +35,7 @@ public class AddCongNhanActivity extends AppCompatActivity {
            // String tmp = bundle.getString("max");
             max = Integer.parseInt(getIntent().getStringExtra("max"));
         }
-        txtMaCN.setText((max+1) +"");
+        txtMaCN.setText("CN0"+(max+1));
     }
 
     private  void  setEvent() {
@@ -71,5 +71,9 @@ public class AddCongNhanActivity extends AppCompatActivity {
         txtTenCN = findViewById(R.id.tenCNadd);
         txtPhanXuong = findViewById(R.id.phanXuongCNadd);
         btnThem = findViewById(R.id.btnADD);
+    }
+
+    public void back(View view) {
+        onBackPressed();
     }
 }

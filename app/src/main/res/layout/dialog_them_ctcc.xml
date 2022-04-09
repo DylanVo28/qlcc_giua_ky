@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bottom_dialog"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/bottom_dialog">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,68 +13,98 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_them_ctcc" />
+            android:src="@drawable/ic_edit_ctcc_24"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thêm sản phẩm chấm công"
             android:textSize="18dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:text="Thêm sản phẩm chấm công"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="3dp"
         android:layout_margin="5dp"
         android:background="?android:attr/listDivider" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp">
 
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="120dp"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="Số thành phẩm: "
-                android:textSize="16dp" />
-
-            <EditText
-                android:id="@+id/editSoTP"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="5dp" />
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/imgSanPham"
+            android:layout_width="120dp"
+            android:layout_height="140dp"
+            android:layout_margin="10dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:layout_marginRight="10dp">
 
-            <TextView
-                android:layout_width="120dp"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="Số phế phẩm:"
-                android:textSize="16dp" />
-
-            <EditText
-                android:id="@+id/editSoPP"
+            <Spinner
+                android:id="@+id/spnSanPham"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="5dp" />
+                android:background="@null"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:text="Số thành phẩm: "
+                    android:textSize="16dp"
+                    android:gravity="center_vertical" />
+
+                <EditText
+                    android:id="@+id/editSoTP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:text="Số phế phẩm:"
+                    android:textSize="16dp"
+                    android:gravity="center_vertical" />
+
+                <EditText
+                    android:id="@+id/editSoPP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"/>
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
@@ -85,15 +114,16 @@
         android:background="?android:attr/listDivider" />
 
     <Button
-        android:id="@+id/btnXacNhanSua"
+        android:id="@+id/btnXacNhanThem"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="5dp"
-        android:backgroundTint="@color/xacnhan"
-        android:drawableLeft="@drawable/ic_confirm_24"
         android:gravity="center_vertical"
-        android:paddingLeft="130dp"
         android:text="XÁC NHẬN"
         android:textSize="20dp"
-        android:textStyle="bold" />
+        android:drawableLeft="@drawable/ic_confirm_24"
+        android:paddingLeft="130dp"
+        android:textStyle="bold"
+        android:backgroundTint="@color/xacnhan"
+        android:textColor="@color/white"
+        android:layout_marginTop="5dp"/>
 </LinearLayout>

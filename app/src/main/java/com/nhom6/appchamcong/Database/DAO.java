@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.nhom6.appchamcong.Entity.CHAMCONG;
@@ -108,7 +109,6 @@ public class DAO {
         return sanphams;
     }
 
-
     //Công nhân DAO
     public void themCongNhan(Context context, CONGNHAN cn) {
         dbCHAMCONG = new DBCHAMCONG(context);
@@ -122,10 +122,15 @@ public class DAO {
         long rs = db.insert(CONGNHAN.TBLCONGNHAN,null,cv);
     }
 
-    public boolean xoaCongNhan(Context context,CONGNHAN cn) {
+    public boolean xoaCongNhan (Context context,CONGNHAN cn) throws SQLiteConstraintException {
         dbCHAMCONG = new DBCHAMCONG(context);
         SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
-        return db.delete(CONGNHAN.TBLCONGNHAN,CONGNHAN.MACN +"="+"'"+ cn.getMaCN()+"'",null) > 0;
+        try {
+            db.delete(CONGNHAN.TBLCONGNHAN,CONGNHAN.MACN +"="+"'"+ cn.getMaCN()+"'",null);
+            return true;
+        }catch (SQLiteConstraintException e){
+            return false;
+        }
     }
 
     public int suaCongNhan(Context context, CONGNHAN cn){
@@ -191,9 +196,9 @@ public class DAO {
     }
 
     @SuppressLint("Range")
-    public ArrayList<CHAMCONG> getDSChamCong(Context context) {
+    public ArrayList<CHAMCONG> getDSChamCong(Context context, String macn) {
         dbCHAMCONG = new DBCHAMCONG(context);
-        Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM CHAMCONG");
+        Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM CHAMCONG WHERE MACN = " + macn);
         ArrayList<CHAMCONG> dsChamCong = new ArrayList<CHAMCONG>();
         int i = 0;
         if (cursor.getCount() > 0)
@@ -203,7 +208,7 @@ public class DAO {
                 String MACC = cursor.getString(cursor.getColumnIndex("MACC"));
                 String NGAYCHAMCONG = cursor.getString(cursor.getColumnIndex("NGAYCHAMCONG"));
                 String MACN = cursor.getString(cursor.getColumnIndex("MACN"));
-                dsChamCong.add(new CHAMCONG(MACN,NGAYCHAMCONG,MACN));
+                dsChamCong.add(new CHAMCONG(MACC,NGAYCHAMCONG,MACN));
                 i++;
             } while (cursor.moveToNext());
             cursor.close();
@@ -214,7 +219,7 @@ public class DAO {
     public ArrayList<CHITIETCHAMCONG> getDsCtChamCong(Context context, String macc){
         dbCHAMCONG = new DBCHAMCONG(context);
         ArrayList<CHITIETCHAMCONG> dsCtChamCong = new ArrayList<>();
-        String sql = "SELECT MASP,SOTP,SOPP,TENSP,DONGIA,IMG FROM CHITIETCHAMCONG, SANPHAM "
+        String sql = "SELECT SANPHAM.MASP,SOTP,SOPP,TENSP,DONGIA,IMG FROM CHITIETCHAMCONG, SANPHAM "
                 +"WHERE CHITIETCHAMCONG.MASP = SANPHAM.MASP " +
                 "AND MACC = '"+macc+"'";
         Cursor cursor = dbCHAMCONG.executeQuery(sql);
@@ -265,6 +270,29 @@ public class DAO {
                 "MACC=? AND MASP=?",new String[]{ctcc.getMaCC(),ctcc.getMaSP()});
     }
 
+    @SuppressLint("Range")
+    public ArrayList<SANPHAM> getSanphamCc(Context context, String macc){
+        dbCHAMCONG=new DBCHAMCONG(context);
+        Cursor db=dbCHAMCONG.executeQuery("SELECT * FROM SANPHAM\n" +
+                "WHERE MASP NOT IN (SELECT MASP \n" +
+                "                   FROM CHITIETCHAMCONG \n" +
+                "                   WHERE MACC = '"+macc+"')");
+        ArrayList<SANPHAM> sanphams= new ArrayList<SANPHAM>();
+        if (db.getCount() > 0)
+        {
+            db.moveToFirst();
+            do {
+                String MASP=db.getString(db.getColumnIndex("MASP"));
+                String TENSP=db.getString(db.getColumnIndex("TENSP"));
+                String DONGIA=db.getString(db.getColumnIndex("DONGIA"));
+                String IMG=db.getString(db.getColumnIndex("IMG"));
+
+                sanphams.add(new SANPHAM(MASP,TENSP,Integer.parseInt(DONGIA),IMG));
+            } while (db.moveToNext());
+            db.close();
+        }
+        return sanphams;
+    }
 
     //Chấm công DAO
     public void themChamCong(Context context, CHAMCONG cc) {

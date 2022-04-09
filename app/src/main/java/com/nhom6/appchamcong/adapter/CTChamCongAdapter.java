@@ -1,6 +1,8 @@
 package com.nhom6.appchamcong.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,34 +78,48 @@ public class CTChamCongAdapter extends BaseAdapter {
         btnSuaCtcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BottomSheetDialog dialog = new BottomSheetDialog(context);
-                dialog.setContentView(R.layout.dialog_sua_ctcc);
-                TextView txtTenSPSua = dialog.findViewById(R.id.txtTenSPSua);
-                EditText editSoTP = dialog.findViewById(R.id.editSoTP);
-                EditText editSoPP= dialog.findViewById(R.id.editSoPP);
-                ImageView imgSpSua= dialog.findViewById(R.id.imgSanPhamSua);
-                Button btnXacNhanSua =dialog.findViewById(R.id.btnXacNhanSua);
+                BottomSheetDialog dialog = new BottomSheetDialog(context,R.style.Theme_Design_BottomSheetDialog);
+                View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_sua_ctcc,null);
+
+                TextView txtTenSPSua = dialogView.findViewById(R.id.txtTenSPSua);
+                EditText editSoTP = dialogView.findViewById(R.id.editSoTP);
+                EditText editSoPP= dialogView.findViewById(R.id.editSoPP);
+                ImageView imgSpSua= dialogView.findViewById(R.id.imgSanPhamSua);
+                Button btnXacNhanSua =dialogView.findViewById(R.id.btnXacNhanSua);
 
                 Picasso.get().load(ctcc.getSp().getImg()).into(imgSpSua);
                 txtTenSPSua.setText(ctcc.getSp().getTenSP());
-                editSoTP.setText(ctcc.getSoTP());
-                editSoPP.setText(ctcc.getSoPP());
+                editSoTP.setText(String.valueOf(ctcc.getSoTP()));
+                editSoPP.setText(String.valueOf(ctcc.getSoPP()));
 
                 btnXacNhanSua.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        int soTP = Integer.parseInt(String.valueOf(editSoTP.getText()));
-                        int soPP = Integer.parseInt(String.valueOf(editSoPP.getText()));
+                        new AlertDialog.Builder(context)
+                                .setTitle("Sửa sản phẩm chấm công")
+                                .setMessage("Lưu ý, thông tin chi tiết chấm công này sẽ bị thay đổi")
+                                .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dl, int which) {
+                                        int soTP = Integer.parseInt(String.valueOf(editSoTP.getText()));
+                                        int soPP = Integer.parseInt(String.valueOf(editSoPP.getText()));
 
-                        ctcc.setSoTP(soTP);
-                        ctcc.setSoPP(soPP);
+                                        ctcc.setSoTP(soTP);
+                                        ctcc.setSoPP(soPP);
 
-                        DAO dao = new DAO();
-                        dao.suaCtChamCong(context,ctcc);
-                        reload();
-                        dialog.dismiss();
+                                        DAO dao = new DAO();
+                                        dao.suaCtChamCong(context,ctcc);
+                                        reload();
+                                        dialog.dismiss();
+                                    }
+
+                                })
+                                .setNegativeButton("Bỏ", null)
+                                .show();
                     }
                 });
+                dialog.setContentView(dialogView);
                 dialog.show();
             }
         });
@@ -111,11 +127,11 @@ public class CTChamCongAdapter extends BaseAdapter {
 
     private void setValues(ViewHolder viewHolder, CHITIETCHAMCONG ctcc) {
         viewHolder.txtTenSp.setText(ctcc.getSp().getTenSP());
-        viewHolder.txtTienCong.setText(ctcc.getTienCong());
+        viewHolder.txtTienCong.setText(String.valueOf(ctcc.getTienCong()));
         Picasso.get().load(ctcc.getSp().getImg()).into(viewHolder.imgSanPham);
         viewHolder.txtDonGia.setText(ctcc.getSp().getDonGia()+"đ");
-        viewHolder.txtSoTP.setText(ctcc.getSoTP());
-        viewHolder.txtSoPP.setText(ctcc.getSoPP());
+        viewHolder.txtSoTP.setText(String.valueOf(ctcc.getSoTP()));
+        viewHolder.txtSoPP.setText(String.valueOf(ctcc.getSoPP()));
     }
 
     public void reload(){

@@ -5,16 +5,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="5dp">
 
         <ImageView
             android:id="@+id/imgSanPham"
@@ -27,7 +23,7 @@
 
             <TextView
                 android:id="@+id/txtTenSanPham"
-                android:layout_width="wrap_content"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
@@ -35,7 +31,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
                 android:text="Ten San Pham Ten San Pham"
-                android:textSize="15dp" />
+                android:textSize="16dp" />
 
             <ImageButton
                 android:id="@+id/btnSuaCtcc"
@@ -49,13 +45,20 @@
                 android:id="@+id/txtDonGia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/lyCstr"
                 android:layout_below="@+id/txtTenSanPham"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
                 android:text="20.000đ"
-                android:textSize="17dp" />
+                android:textSize="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="?android:attr/listDivider"
+                android:layout_above="@id/lyCstr"
+                android:layout_marginBottom="6dp"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/lyCstr"
@@ -69,7 +72,7 @@
                     android:id="@+id/lblSoTP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="115dp"
+                    android:layout_marginRight="90dp"
                     android:text="Thành phẩm"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/txtSoTP"
@@ -82,7 +85,7 @@
                     android:id="@+id/txtSoTP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="170dp"
+                    android:layout_marginRight="140dp"
                     android:text="50"
                     android:textSize="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
