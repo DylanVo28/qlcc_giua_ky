@@ -36,7 +36,6 @@ import java.util.ArrayList;
 public class CongNhanFragment extends Fragment {
 
     public static ArrayList<CONGNHAN> dsCongNhan = new ArrayList<CONGNHAN>();
-    ArrayList<Integer> maCN = new ArrayList<Integer>();
     private ListView lvCongNhan;
     public static DAO dao = new DAO();
     public static AdapterDSCongNhan adapterDSCongNhan;
@@ -126,13 +125,10 @@ public class CongNhanFragment extends Fragment {
         if (dsCongNhan.size() > 0) {
             for (CONGNHAN congNhan : dsCongNhan) {
                 maCNGet = congNhan.getMaCN();
-                maCN.add(Integer.parseInt(maCNGet));
-            }
-            max = maCN.get(0);
-
-            for (int i = 0; i < maCN.size(); i++) {
-                if (maCN.get(i).compareTo(max) > 0) { // i = 0
-                    max = maCN.get(i);
+                int stt = Integer.parseInt(maCNGet.replace("CN0",""));
+                if (stt>max){
+                    max = stt;
+                    Log.d("max", max+"");
                 }
             }
         }
