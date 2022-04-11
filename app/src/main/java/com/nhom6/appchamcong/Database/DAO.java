@@ -12,7 +12,6 @@ import com.nhom6.appchamcong.Entity.CHITIETCHAMCONG;
 import com.nhom6.appchamcong.Entity.CONGNHAN;
 import com.nhom6.appchamcong.Entity.SANPHAM;
 
-import java.sql.Array;
 import java.util.ArrayList;
 
 
@@ -26,7 +25,7 @@ public class DAO {
     //Nếu thích làm kiểu viết hắn câu truy vấn TSQL ra string rồi execute thì dùng phương thức executeQuery và executeUpdate trong DBCHAMCONG
 
     //Sản phẩm DAO
-    public void themSanPham(Context context, SANPHAM sp){
+    public boolean themSanPham(Context context, SANPHAM sp){
         dbCHAMCONG = new DBCHAMCONG(context);
         SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -34,9 +33,12 @@ public class DAO {
         cv.put(SANPHAM.TENSP,sp.getTenSP());
         cv.put(SANPHAM.DONGIA, sp.getDonGia());
         cv.put(SANPHAM.IMG,sp.getImg());
-
         long rs = db.insert(SANPHAM.TBLSANPHAM,null,cv);
+
+        return rs>0? true:false;
     }
+
+
 
     public boolean xoaSanPham(Context context,SANPHAM sp){
         dbCHAMCONG = new DBCHAMCONG(context);
@@ -44,14 +46,20 @@ public class DAO {
         return db.delete(SANPHAM.TBLSANPHAM,SANPHAM.MASP +"="+"'"+sp.getMaSP()+"'",null)>0;
     }
 
-    public int suaSanPham(Context context, SANPHAM sp){
+    public boolean suaSanPham(Context context, SANPHAM sp){
         dbCHAMCONG = new DBCHAMCONG(context);
         SQLiteDatabase db = dbCHAMCONG.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(SANPHAM.TENSP,sp.getTenSP());
         cv.put(SANPHAM.DONGIA, sp.getDonGia());
         cv.put(SANPHAM.IMG,sp.getImg());
-        return db.update(SANPHAM.TBLSANPHAM,cv,"MASP=?",new String[]{sp.getMaSP()});
+        try{
+            int rs= db.update(SANPHAM.TBLSANPHAM,cv,"MASP=?",new String[]{sp.getMaSP()});
+
+        }catch (SQLiteConstraintException e){
+            return false;
+        }
+        return true;
     }
 
     @SuppressLint("Range")

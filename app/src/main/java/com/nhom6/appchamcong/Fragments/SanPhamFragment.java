@@ -20,12 +20,14 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsoluteLayout;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
@@ -54,6 +56,20 @@ public class SanPhamFragment extends Fragment {
     private BottomSheetDialog dialogEdit = null;
     private static SanPhamFragment instance;
     private Intent image = null;
+
+    public void hideLoading(){
+        AbsoluteLayout al=dialog.findViewById(R.id.layout_dialog_sanpham);
+        al.setAlpha(1F);
+        LottieAnimationView animationView = dialog.findViewById(R.id.animationView);
+        animationView.setVisibility(View.GONE);
+    }
+
+    public void showLoading(){
+        LottieAnimationView animationView = dialog.findViewById(R.id.animationView);
+        animationView.setVisibility(View.VISIBLE);
+        AbsoluteLayout al=dialog.findViewById(R.id.layout_dialog_sanpham);
+        al.setAlpha(0.5F);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -119,24 +135,56 @@ public class SanPhamFragment extends Fragment {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onClick(View view) {
-                        verifyStoragePermissions(getActivity());
-                        image.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                        Uri fileUri = image.getData();
-                        String filePath = UriUtils.getPathFromUri(getContext(), fileUri);
-
                         EditText tensp = (EditText) dialog.findViewById(R.id.edit_ten_sp);
                         EditText giasp = (EditText) dialog.findViewById(R.id.edit_gia_sp);
                         String idsp = java.util.UUID.randomUUID().toString();
+                        if(tensp.getText().toString().equals("")){
+                            Toast.makeText(getContext(), "Tên sản phẩm không được để trống", Toast.LENGTH_SHORT).show();
+                            hideLoading();
+                            return;
+                        }
+                        if(giasp.getText().toString().equals("")){
+                            Toast.makeText(getContext(), "Giá sản phẩm không được để trống", Toast.LENGTH_SHORT).show();
+                            hideLoading();
+                            return;
+                        }
+                        verifyStoragePermissions(getActivity());
+                        try{
+                            image.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+
+                        }catch(Exception e){
+                            Toast.makeText(getContext(), "Vui lòng chọn ảnh sản phẩm", Toast.LENGTH_SHORT).show();
+
+                            hideLoading();
+                            return;
+                        }
+                        Uri fileUri = image.getData();
+                        String filePath = UriUtils.getPathFromUri(getContext(), fileUri);
+
+
 
                         MediaManager.get().upload(filePath).callback((UploadCallback) (new UploadCallback() {
                             public void onSuccess(@Nullable String requestId, @Nullable Map resultData) {
                                 Log.d("onSuccess_onSuccess", "onSuccess: " + resultData);
                                 SANPHAM sp = new SANPHAM(idsp, tensp.getText().toString(),
                                         Integer.parseInt(giasp.getText().toString()), (String) resultData.get("secure_url"));
-                                dao.themSanPham(getContext(), sp);
+                                if( !dao.themSanPham(getContext(), sp)){
+
+
+                                    hideLoading();
+
+                                    Toast.makeText(getContext(), "Không thêm được sản phẩm", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+
                                 Toast.makeText(getContext(), "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
                                 sanphams.add(sp);
                                 aa.notifyDataSetChanged();
+
+                               hideLoading();
+
+                                image=null;
                                 dialog.dismiss();
                             }
 
@@ -156,7 +204,7 @@ public class SanPhamFragment extends Fragment {
 
                             public void onStart(@Nullable String requestId) {
                                 Log.d("start_start", "start: " + requestId);
-
+                                showLoading();
                             }
                         })).dispatch();
 
@@ -178,9 +226,9 @@ public class SanPhamFragment extends Fragment {
         if (type.equals("CREATE")) {
             startActivityForResult(intent, 100);
 
-            Uri uri = data.getData();
-            Glide.with(getActivity()).load(uri).into(imgSanPham);
-            image = data;
+//            Uri uri = data.getData();
+//            Glide.with(getActivity()).load(uri).into(imgSanPham);
+//            image = data;
         }
         if (type.equals("EDIT")) {
             dialogEdit = dialog;

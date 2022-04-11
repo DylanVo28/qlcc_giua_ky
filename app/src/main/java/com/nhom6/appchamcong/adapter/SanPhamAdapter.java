@@ -86,6 +86,22 @@ public class SanPhamAdapter extends BaseAdapter  {
         public ImageButton editsp;
     }
 
+    public static void showLoading(BottomSheetDialog dialog){
+        LottieAnimationView animationView = dialog.findViewById(R.id.animationView);
+        animationView.setVisibility(View.VISIBLE);
+
+        AbsoluteLayout al=dialog.findViewById(R.id.layout_dialog_sanpham);
+        al.setAlpha(0.5F);
+    }
+
+    public void hideLoading(BottomSheetDialog dialog){
+        LottieAnimationView animationView = dialog.findViewById(R.id.animationView);
+        animationView.setVisibility(View.GONE);
+
+        AbsoluteLayout al=dialog.findViewById(R.id.layout_dialog_sanpham);
+        al.setAlpha(1F);
+    }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder vh;
@@ -115,6 +131,8 @@ public class SanPhamAdapter extends BaseAdapter  {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
 
         vh.editsp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,58 +172,88 @@ public class SanPhamAdapter extends BaseAdapter  {
                     @Override
                     public void onClick(View view) {
                         try{
+                            showLoading(dialog);
+                            if(tensp.getText().toString().equals("")){
+                                Toast.makeText(view.getContext(), "Tên sản phẩm không được để trống", Toast.LENGTH_SHORT).show();
+                                hideLoading(dialog);
+                                return;
+                            }
+                            if(giasp.getText().toString().equals("")){
+                                Toast.makeText(view.getContext(), "Giá sản phẩm không được để trống", Toast.LENGTH_SHORT).show();
+
+                                hideLoading(dialog);
+
+                                return;
+                            }
                             SanPhamFragment.getInstance().verifyStoragePermissions(
                                     SanPhamFragment.getInstance().getActivity());
 
                             Intent image=SanPhamFragment.getInstance().getImage();
-                            Uri fileUri=image.getData();
-                            String filePath= UriUtils.getPathFromUri(view.getContext(),fileUri);
+                            if(image!=null){
+                                Uri fileUri=image.getData();
+                                String filePath= UriUtils.getPathFromUri(view.getContext(),fileUri);
 
-                            MediaManager.get().upload(filePath).callback((UploadCallback)(new UploadCallback() {
-                                public void onSuccess(@Nullable String requestId, @Nullable Map resultData) {
-                                    SANPHAM sp=new SANPHAM(m.getMaSP(),tensp.getText().toString(),
-                                            Integer.parseInt(giasp.getText().toString()),
-                                            (String) resultData.get("secure_url"));
-                                    dao.suaSanPham(view.getContext(),sp);
+                                MediaManager.get().upload(filePath).callback((UploadCallback)(new UploadCallback() {
+                                    public void onSuccess(@Nullable String requestId, @Nullable Map resultData) {
+                                        SANPHAM sp=new SANPHAM(m.getMaSP(),tensp.getText().toString(),
+                                                Integer.parseInt(giasp.getText().toString()),
+                                                (String) resultData.get("secure_url"));
+                                        dao.suaSanPham(view.getContext(),sp);
 
-                                    AbsoluteLayout al=dialog.findViewById(R.id.layout_dialog_sanpham);
-                                    al.setAlpha(1F);
+                                        hideLoading(dialog);
 
-                                    LottieAnimationView animationView = dialog.findViewById(R.id.animationView);
-                                    animationView.setVisibility(View.GONE);
+                                        Toast.makeText(view.getContext(), "Sửa sản phẩm thành công", Toast.LENGTH_SHORT).show();
 
-                                    Toast.makeText(view.getContext(), "Sửa sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                                        sanphams= dao.getSanphams(view.getContext());
+                                        notifyDataSetChanged();
 
-                                    sanphams= dao.getSanphams(view.getContext());
-                                    notifyDataSetChanged();
-                                    dialog.dismiss();
+                                        dialog.dismiss();
 
+                                    }
+
+                                    public void onProgress(@Nullable String requestId, long bytes, long totalBytes) {
+                                        Log.d("onProgress_onProgress","onProgress: "+totalBytes+" "+requestId+" "+bytes);
+
+                                    }
+
+                                    public void onReschedule(@Nullable String requestId, @Nullable ErrorInfo error) {
+                                        Log.d("reschedule_reschedule","reschedule: "+error+" "+requestId);
+                                    }
+
+                                    public void onError(@Nullable String requestId, @Nullable ErrorInfo error) {
+                                        Log.d("error_error","error: "+ error);
+
+                                    }
+
+                                    public void onStart(@Nullable String requestId) {
+                                        Log.d("start_start","start: "+ requestId);
+
+                                    }
+                                })).dispatch();
+                            }
+                            else{
+
+
+
+                                SANPHAM sp=new SANPHAM(m.getMaSP(),tensp.getText().toString(),
+                                        Integer.parseInt(giasp.getText().toString()),
+                                        m.getImg());
+                                hideLoading(dialog);
+
+                                if(!dao.suaSanPham(view.getContext(),sp)){
+                                    Toast.makeText(view.getContext(), "Tên san phẩm trùng với các sản phẩm khác", Toast.LENGTH_SHORT).show();
+                                    return;
                                 }
 
-                                public void onProgress(@Nullable String requestId, long bytes, long totalBytes) {
-                                    Log.d("onProgress_onProgress","onProgress: "+totalBytes+" "+requestId+" "+bytes);
 
-                                }
+                                Toast.makeText(view.getContext(), "Sửa sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                                sanphams= dao.getSanphams(view.getContext());
+                                notifyDataSetChanged();
+                                dialog.dismiss();
 
-                                public void onReschedule(@Nullable String requestId, @Nullable ErrorInfo error) {
-                                    Log.d("reschedule_reschedule","reschedule: "+error+" "+requestId);
-                                }
+                            }
 
-                                public void onError(@Nullable String requestId, @Nullable ErrorInfo error) {
-                                    Log.d("error_error","error: "+ error);
 
-                                }
-
-                                public void onStart(@Nullable String requestId) {
-                                    Log.d("start_start","start: "+ requestId);
-
-                                    LottieAnimationView animationView = dialog.findViewById(R.id.animationView);
-                                    animationView.setVisibility(View.VISIBLE);
-
-                                    AbsoluteLayout al=dialog.findViewById(R.id.layout_dialog_sanpham);
-                                    al.setAlpha(0.5F);
-                                }
-                            })).dispatch();
 
 
 
@@ -241,9 +289,9 @@ public class SanPhamAdapter extends BaseAdapter  {
 
             }
         });
-        vh.masp.setText(m.getMaSP());
-        vh.tensp.setText(m.getTenSP());
-        vh.giasp.setText(""+m.getDonGia());
+        vh.masp.setText("Mã sp: "+m.getMaSP());
+        vh.tensp.setText("Tên sp: "+m.getTenSP());
+        vh.giasp.setText("Giá sp: "+m.getDonGia()+" vnđ");
         return view;
     }
 
