@@ -43,7 +43,9 @@ public class AddChamCongActivity extends AppCompatActivity {
         setControl();
         txtMaCN.setText(congnhan.getMaCN());
         txtTenCN.setText(congnhan.getHoCN()+" "+congnhan.getTenCN());
+        maCN = congnhan.getMaCN();
         setEvent();
+
     }
 
     private  void  setEvent() {

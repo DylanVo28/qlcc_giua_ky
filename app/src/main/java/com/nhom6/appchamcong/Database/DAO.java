@@ -206,7 +206,7 @@ public class DAO {
     @SuppressLint("Range")
     public ArrayList<CHAMCONG> getDSChamCong(Context context, String macn) {
         dbCHAMCONG = new DBCHAMCONG(context);
-        Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM CHAMCONG WHERE MACN = " + macn);
+        Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM CHAMCONG WHERE MACN = '" + macn+"'");
         ArrayList<CHAMCONG> dsChamCong = new ArrayList<CHAMCONG>();
         int i = 0;
         if (cursor.getCount() > 0)
