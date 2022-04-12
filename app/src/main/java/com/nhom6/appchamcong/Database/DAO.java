@@ -1,6 +1,7 @@
 package com.nhom6.appchamcong.Database;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -137,6 +138,11 @@ public class DAO {
             db.delete(CONGNHAN.TBLCONGNHAN,CONGNHAN.MACN +"="+"'"+ cn.getMaCN()+"'",null);
             return true;
         }catch (SQLiteConstraintException e){
+            new AlertDialog.Builder(context)
+                    .setTitle("Không thể xóa công nhân "+cn.getMaCN())
+                    .setMessage("Công nhân này đã có chấm công, không thể xóa")
+                    .setPositiveButton("Đã hiểu",null)
+                    .show();
             return false;
         }
     }

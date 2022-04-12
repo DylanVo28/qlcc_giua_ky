@@ -2,6 +2,8 @@ package com.nhom6.appchamcong;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -10,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -33,7 +36,7 @@ public class ChiTietChamCongActivity extends AppCompatActivity {
     private ArrayList<CHITIETCHAMCONG> dsCtcc = new ArrayList<>();
     private DAO dao = new DAO();
     private CONGNHAN congnhan;
-    private TextView txtTenCN, txtMaCN, txtMaCC;
+    private TextView txtTenCN, txtMaCN, txtMaCC, txtTongTienCong;
     private ListView lvDsSanPhamCc;
 
     @Override
@@ -56,7 +59,8 @@ public class ChiTietChamCongActivity extends AppCompatActivity {
         txtMaCN = findViewById(R.id.txtMaCn);
         txtMaCC = findViewById(R.id.txtMaCC);
         lvDsSanPhamCc = findViewById(R.id.lvDsSanPhamCc);
-        lvDsSanPhamCc.setAdapter(new CTChamCongAdapter(dsCtcc, ChiTietChamCongActivity.this));
+        txtTongTienCong = findViewById(R.id.txtTongTien);
+        lvDsSanPhamCc.setAdapter(new CTChamCongAdapter(dsCtcc, ChiTietChamCongActivity.this, txtTongTienCong));
     }
 
     public void themMoi(MenuItem item) {
@@ -102,6 +106,7 @@ public class ChiTietChamCongActivity extends AppCompatActivity {
                 }
             }
         });
+
         dialog.setContentView(dialogView);
         dialog.show();
     }

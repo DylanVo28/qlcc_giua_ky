@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nhom6.appchamcong.ChiTietChamCongActivity;
@@ -26,10 +27,21 @@ public class CTChamCongAdapter extends BaseAdapter {
 
     private ArrayList<CHITIETCHAMCONG> dsCtcc = new ArrayList<>();
     private Context context;
+    private TextView txtTongTienCong;
 
-    public CTChamCongAdapter(ArrayList<CHITIETCHAMCONG> dsCtcc, Context context) {
+    public CTChamCongAdapter(ArrayList<CHITIETCHAMCONG> dsCtcc, Context context, TextView txtTongTienCong) {
         this.dsCtcc = dsCtcc;
         this.context = context;
+        this.txtTongTienCong = txtTongTienCong;
+        setTongTienCong();
+    }
+
+    private void setTongTienCong() {
+        int Tong=0;
+        for (CHITIETCHAMCONG ctcc : dsCtcc){
+            Tong = Tong + ctcc.getTienCong();
+        }
+        txtTongTienCong.setText(Tong+"đ");
     }
 
     private static class ViewHolder {
@@ -86,6 +98,7 @@ public class CTChamCongAdapter extends BaseAdapter {
                 EditText editSoPP = dialogView.findViewById(R.id.editSoPP);
                 ImageView imgSpSua = dialogView.findViewById(R.id.imgSanPhamSua);
                 Button btnXacNhanSua = dialogView.findViewById(R.id.btnXacNhanSua);
+                ImageButton btnXoaCtcc = dialogView.findViewById(R.id.btnXoaCtcc);
 
                 Picasso.get().load(ctcc.getSp().getImg()).into(imgSpSua);
                 txtTenSPSua.setText(ctcc.getSp().getTenSP());
@@ -101,20 +114,54 @@ public class CTChamCongAdapter extends BaseAdapter {
                                 .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dl, int which) {
-                                        int soTP = Integer.parseInt(String.valueOf(editSoTP.getText()));
-                                        int soPP = Integer.parseInt(String.valueOf(editSoPP.getText()));
+                                        try {
+                                            int soTP = Integer.parseInt(String.valueOf(editSoTP.getText()));
+                                            int soPP = Integer.parseInt(String.valueOf(editSoPP.getText()));
+                                            ctcc.setSoTP(soTP);
+                                            ctcc.setSoPP(soPP);
 
-                                        ctcc.setSoTP(soTP);
-                                        ctcc.setSoPP(soPP);
-
-                                        DAO dao = new DAO();
-                                        dao.suaCtChamCong(context, ctcc);
-                                        reload(ctcc.getMaCC());
-                                        dialog.dismiss();
+                                            DAO dao = new DAO();
+                                            dao.suaCtChamCong(context, ctcc);
+                                            reload(ctcc.getMaCC());
+                                            dialog.dismiss();
+                                        }catch(Exception ex){
+                                            new AlertDialog.Builder(context)
+                                                    .setTitle("Lỗi nhập liệu")
+                                                    .setMessage("Thành phẩm và phế phẩm phải nhập số")
+                                                    .setPositiveButton("Đã hiểu", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            editSoTP.setText("0");
+                                                            editSoPP.setText("0");
+                                                        }
+                                                    }).show();
+                                        }
                                     }
 
                                 })
                                 .setNegativeButton("Bỏ", null)
+                                .show();
+                    }
+                });
+                btnXoaCtcc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        new AlertDialog.Builder(context)
+                                .setTitle("Bạn có chắc muốn xóa chi tiết chấm công này?")
+                                .setMessage("Thông tin về sản phẩm chấm công này sẽ mất vĩnh viễn")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dl, int which) {
+                                        DAO dao = new DAO();
+                                        boolean rs = dao.xoaCtChamCong(context,ctcc);
+                                        if (rs){
+                                            Toast.makeText(context, "Đã xóa "+ctcc.getSp().getTenSP()+" khỏi danh sách sản phẩm chấm công", Toast.LENGTH_SHORT).show();
+                                            reload(ctcc.getMaCC());
+                                            dialog.dismiss();
+                                        }
+                                    }
+                                }).setNegativeButton("Hủy",null)
                                 .show();
                     }
                 });
@@ -136,6 +183,7 @@ public class CTChamCongAdapter extends BaseAdapter {
     public void reload(String macc) {
         DAO dao = new DAO();
         dsCtcc = dao.getDsCtChamCong(context, macc);
+        setTongTienCong();
         notifyDataSetChanged();
     }
 }

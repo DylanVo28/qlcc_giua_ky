@@ -1,5 +1,7 @@
 package com.nhom6.appchamcong;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -35,12 +37,12 @@ public class EditCongNhanActiviy extends AppCompatActivity {
         btnXoa = this.findViewById(R.id.btnXoaChiTiet);
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle.containsKey("CONGNHAN")){
-            cn = (CONGNHAN)bundle.getSerializable("CONGNHAN");
+        if (bundle.containsKey("CONGNHAN")) {
+            cn = (CONGNHAN) bundle.getSerializable("CONGNHAN");
             title.setText(cn.getMaCN());
             hoCNEdit.setText(cn.getHoCN());
             tenCNEdit.setText(cn.getTenCN());
-            phanXuongCNEdit.setText(cn.getPhanXuong()+"");
+            phanXuongCNEdit.setText(cn.getPhanXuong() + "");
         }
 
         btnSua.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +53,7 @@ public class EditCongNhanActiviy extends AppCompatActivity {
                 cn.setTenCN(tenCNEdit.getText().toString());
                 cn.setHoCN(hoCNEdit.getText().toString());
                 cn.setPhanXuong(Integer.parseInt(phanXuongCNEdit.getText().toString()));
-                dao.suaCongNhan(getBaseContext(),cn);
+                dao.suaCongNhan(getBaseContext(), cn);
                 setResult(RESULT_OK);
                 finish();
             }
@@ -60,16 +62,31 @@ public class EditCongNhanActiviy extends AppCompatActivity {
         btnXoa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-             //   Intent intent = new Intent(EditCongNhanActiviy.this, MainActivity.class);
+                //   Intent intent = new Intent(EditCongNhanActiviy.this, MainActivity.class);
                 Intent intent = new Intent();
                 cn.setMaCN(title.getText().toString());
                 cn.setTenCN(tenCNEdit.getText().toString());
                 cn.setHoCN(hoCNEdit.getText().toString());
                 cn.setPhanXuong(Integer.parseInt(phanXuongCNEdit.getText().toString()));
-                dao.xoaCongNhan(getBaseContext(),cn);
-                setResult(RESULT_OK, intent);
-                finish();
+
+                new AlertDialog.Builder(EditCongNhanActiviy.this)
+                        .setTitle("Bạn có chắc muốn xóa công nhân " + cn.getMaCN())
+                        .setMessage("Mọi thông tin về công nhân này sẽ mất vĩnh viễn")
+                        .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                boolean rs = dao.xoaCongNhan(EditCongNhanActiviy.this, cn);
+                                if (rs) {
+                                    setResult(RESULT_OK, intent);
+                                    finish();
+                                }
+                            }
+                        }).setNegativeButton("Hủy", null).show();
             }
         });
+    }
+
+    public void back(View view) {
+        onBackPressed();
     }
 }
