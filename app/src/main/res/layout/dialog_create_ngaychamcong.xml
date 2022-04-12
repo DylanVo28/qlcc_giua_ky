@@ -23,6 +23,7 @@
         android:layout_x="218dp"
         android:layout_y="113dp"
         android:ems="10"
+        android:hint="chọn ngày"
         android:inputType="textPersonName" />
 
     <TextView

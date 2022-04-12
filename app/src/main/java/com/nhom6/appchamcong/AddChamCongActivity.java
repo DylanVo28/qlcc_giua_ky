@@ -1,11 +1,13 @@
 package com.nhom6.appchamcong;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,7 +21,9 @@ import com.nhom6.appchamcong.Entity.CHAMCONG;
 import com.nhom6.appchamcong.Entity.CONGNHAN;
 import com.nhom6.appchamcong.adapter.ChamCongAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class AddChamCongActivity extends AppCompatActivity {
     private DAO dao = new DAO();
@@ -74,10 +78,29 @@ public class AddChamCongActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.dialog_create_ngaychamcong);
         dialog.findViewById(R.id.delete_cc_btn).setVisibility(View.GONE);
 
+        EditText ngaycc = (EditText) dialog.findViewById(R.id.edit_ngaycc);
+        ngaycc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                int ngay = calendar.get(Calendar.DATE);
+                int thang = calendar.get(Calendar.MONTH);
+                int nam = calendar.get(Calendar.YEAR);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddChamCongActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        calendar.set(i,i1,i2);
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        ngaycc.setText(simpleDateFormat.format(calendar.getTime()));
+                    }
+                }, nam, thang, ngay);
+                datePickerDialog.show();
+            }
+        });
+
         dialog.findViewById(R.id.btn_save_ngaycc).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText ngaycc = (EditText) dialog.findViewById(R.id.edit_ngaycc);
                 String maCC = java.util.UUID.randomUUID().toString();
 
                 CHAMCONG chamcong = new CHAMCONG();

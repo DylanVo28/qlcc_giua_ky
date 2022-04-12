@@ -61,8 +61,8 @@
             android:layout_x="115dp"
             android:layout_y="249dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Nhập tên" />
+            android:hint="Nhập tên"
+            android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/btn_save_sp"
