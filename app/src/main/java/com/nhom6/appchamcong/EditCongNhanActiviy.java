@@ -48,14 +48,21 @@ public class EditCongNhanActiviy extends AppCompatActivity {
         btnSua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EditCongNhanActiviy.this, CongNhanFragment.class);
-                cn.setMaCN(title.getText().toString());
-                cn.setTenCN(tenCNEdit.getText().toString());
-                cn.setHoCN(hoCNEdit.getText().toString());
-                cn.setPhanXuong(Integer.parseInt(phanXuongCNEdit.getText().toString()));
-                dao.suaCongNhan(getBaseContext(), cn);
-                setResult(RESULT_OK);
-                finish();
+                try {
+                    Intent intent = new Intent(EditCongNhanActiviy.this, CongNhanFragment.class);
+                    cn.setMaCN(title.getText().toString());
+                    cn.setTenCN(tenCNEdit.getText().toString());
+                    cn.setHoCN(hoCNEdit.getText().toString());
+                    cn.setPhanXuong(Integer.parseInt(phanXuongCNEdit.getText().toString()));
+                    dao.suaCongNhan(getBaseContext(), cn);
+                    setResult(RESULT_OK);
+                    finish();
+                } catch (Exception ex) {
+                    new AlertDialog.Builder(EditCongNhanActiviy.this)
+                            .setTitle("Lỗi nhập liệu ")
+                            .setMessage("Mã phân xưởng là số")
+                            .setPositiveButton("Đã hiểu", null).show();
+                }
             }
         });
 
