@@ -38,15 +38,6 @@
             android:text="Đơn giá" />
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="290dp"
-            android:layout_height="wrap_content"
-            android:layout_x="65dp"
-            android:layout_y="52dp"
-            android:text="Thêm sản phẩm mới"
-            android:textAlignment="center" />
-
-        <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

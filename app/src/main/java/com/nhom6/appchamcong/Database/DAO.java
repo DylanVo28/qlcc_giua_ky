@@ -163,7 +163,7 @@ public class DAO {
         ArrayList<CONGNHAN> dsCongNhan = new ArrayList<>();
         try{
             Cursor cursor = dbCHAMCONG.executeQuery("SELECT * FROM "+ CONGNHAN.TBLCONGNHAN + " WHERE " +
-                    CONGNHAN.TENCN + " LIKE  '"+search+"%'");
+                    CONGNHAN.TENCN + " LIKE  '"+search+"%'"+" OR "+CONGNHAN.HOCN+" LIKE '"+search+"%'");
 
             if (cursor != null) {
                 cursor.moveToFirst();
