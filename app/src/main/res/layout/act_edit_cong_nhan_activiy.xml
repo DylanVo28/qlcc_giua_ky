@@ -104,16 +104,18 @@
 
         <Button
             android:id="@+id/btnSuaChiTiet"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginRight="10dp"
-            android:text="Sửa"></Button>
+            android:text="Sửa"
+            android:layout_weight="1"></Button>
 
         <Button
             android:id="@+id/btnXoaChiTiet"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:text="Xóa"></Button>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Xóa"
+            android:layout_weight="1"></Button>
 
     </LinearLayout>
 
