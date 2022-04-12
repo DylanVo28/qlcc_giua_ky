@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="50dp"
     android:orientation="horizontal"
     android:descendantFocusability = "blocksDescendants">
 
@@ -9,25 +9,30 @@
         android:id="@+id/maCNItem"
         android:text="Mã CN"
         android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:gravity="center"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_alignParentLeft="true"/>
+
     <TextView
         android:id="@+id/hoVaTenCNItem"
         android:layout_width="150dp"
-        android:layout_height="50dp"
-       android:gravity="center"
-        android:text="Họ và tên công nhân"/>
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/maCNItem"
+        android:gravity="center"
+        android:text="Họ và tên công nhân" />
     <TextView
         android:id="@+id/phanXuongCNItem"
         android:text="Phân Xưởng"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:gravity="center"/>
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_toRightOf="@id/hoVaTenCNItem"/>
     <Button
         android:id="@+id/btnChiTietCNItem"
         android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/ic_baseline_edit_24">
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_baseline_edit_24"
+        android:layout_alignParentRight="true">
     </Button>
 
-</LinearLayout>
+</RelativeLayout>
