@@ -43,34 +43,34 @@ public class ChiTietChamCongActivity extends AppCompatActivity {
 
         this.maCC = this.getIntent().getStringExtra("macc");
         this.congnhan = (CONGNHAN) getIntent().getSerializableExtra("congnhan");
-        dsCtcc = dao.getDsCtChamCong(ChiTietChamCongActivity.this,maCC);
+        dsCtcc = dao.getDsCtChamCong(ChiTietChamCongActivity.this, maCC);
         setControl();
 
-        txtTenCN.setText(congnhan.getHoCN()+" "+congnhan.getTenCN());
+        txtTenCN.setText(congnhan.getHoCN() + " " + congnhan.getTenCN());
         txtMaCN.setText(congnhan.getMaCN());
         txtMaCC.setText(maCC);
     }
 
-    private void setControl(){
+    private void setControl() {
         txtTenCN = findViewById(R.id.txtTenCn);
         txtMaCN = findViewById(R.id.txtMaCn);
         txtMaCC = findViewById(R.id.txtMaCC);
         lvDsSanPhamCc = findViewById(R.id.lvDsSanPhamCc);
-        lvDsSanPhamCc.setAdapter(new CTChamCongAdapter(dsCtcc,ChiTietChamCongActivity.this));
+        lvDsSanPhamCc.setAdapter(new CTChamCongAdapter(dsCtcc, ChiTietChamCongActivity.this));
     }
 
     public void themMoi(MenuItem item) {
-        BottomSheetDialog dialog = new BottomSheetDialog(ChiTietChamCongActivity.this,R.style.Theme_Design_BottomSheetDialog);
-        View dialogView = LayoutInflater.from(ChiTietChamCongActivity.this).inflate(R.layout.dialog_sua_ctcc,null);
+        BottomSheetDialog dialog = new BottomSheetDialog(ChiTietChamCongActivity.this, R.style.Theme_Design_BottomSheetDialog);
+        View dialogView = LayoutInflater.from(ChiTietChamCongActivity.this).inflate(R.layout.dialog_them_ctcc, null);
 
         Spinner spnSanPham = dialogView.findViewById(R.id.spnSanPham);
         EditText editSoTP = dialogView.findViewById(R.id.editSoTP);
-        EditText editSoPP= dialogView.findViewById(R.id.editSoPP);
-        ImageView imgSanPham= dialogView.findViewById(R.id.imgSanPham);
+        EditText editSoPP = dialogView.findViewById(R.id.editSoPP);
+        ImageView imgSanPham = dialogView.findViewById(R.id.imgSanPham);
         Button btnXacNhanThem = dialogView.findViewById(R.id.btnXacNhanThem);
 
-        ArrayList<SANPHAM> dsSpCc = dao.getSanphamCc(ChiTietChamCongActivity.this,maCC);
-        spnSanPham.setAdapter(new SpinnerSanPhamAdapter(ChiTietChamCongActivity.this,R.layout.row_spnsanpham,dsSpCc));
+        ArrayList<SANPHAM> dsSpCc = dao.getSanphamCc(ChiTietChamCongActivity.this, maCC);
+        spnSanPham.setAdapter(new SpinnerSanPhamAdapter(ChiTietChamCongActivity.this, R.layout.row_spnsanpham, dsSpCc));
 
         spnSanPham.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -92,12 +92,14 @@ public class ChiTietChamCongActivity extends AppCompatActivity {
                 int soPP = Integer.parseInt(String.valueOf(editSoPP.getText()));
 
                 SANPHAM selectedSp = (SANPHAM) spnSanPham.getSelectedItem();
-                CHITIETCHAMCONG ctcc = new CHITIETCHAMCONG(maCC,selectedSp.getMaSP(),soTP,soPP);
+                CHITIETCHAMCONG ctcc = new CHITIETCHAMCONG(maCC, selectedSp.getMaSP(), soTP, soPP);
 
-                dao.themCtChamCong(ChiTietChamCongActivity.this,ctcc);
-                ((CTChamCongAdapter)lvDsSanPhamCc.getAdapter()).reload();
-                Toast.makeText(ChiTietChamCongActivity.this,"Đã thêm sản phẩm chấm công mới", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+                boolean rs = dao.themCtChamCong(ChiTietChamCongActivity.this, ctcc);
+                if (rs) {
+                    ((CTChamCongAdapter) lvDsSanPhamCc.getAdapter()).reload(maCC);
+                    Toast.makeText(ChiTietChamCongActivity.this, "Đã thêm sản phẩm chấm công mới", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
             }
         });
         dialog.setContentView(dialogView);

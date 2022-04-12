@@ -32,7 +32,7 @@ public class CTChamCongAdapter extends BaseAdapter {
         this.context = context;
     }
 
-    private static class ViewHolder{
+    private static class ViewHolder {
         public ImageView imgSanPham;
         public TextView txtTenSp;
         public TextView txtDonGia;
@@ -59,7 +59,7 @@ public class CTChamCongAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
-        convertView = LayoutInflater.from(context).inflate(R.layout.ctcc_row,null);
+        convertView = LayoutInflater.from(context).inflate(R.layout.ctcc_row, null);
         ViewHolder viewHolder = new ViewHolder();
         viewHolder.imgSanPham = convertView.findViewById(R.id.imgSanPham);
         viewHolder.txtTenSp = convertView.findViewById(R.id.txtTenSanPham);
@@ -67,10 +67,10 @@ public class CTChamCongAdapter extends BaseAdapter {
         viewHolder.txtSoTP = convertView.findViewById(R.id.txtSoTP);
         viewHolder.txtSoPP = convertView.findViewById(R.id.txtSoPP);
         viewHolder.txtTienCong = convertView.findViewById(R.id.txtTienCong);
-        viewHolder.btnSuaCtcc  = convertView.findViewById(R.id.btnSuaCtcc);
+        viewHolder.btnSuaCtcc = convertView.findViewById(R.id.btnSuaCtcc);
         convertView.setTag(viewHolder);
         setValues(viewHolder, dsCtcc.get(i));
-        setEvent(viewHolder.btnSuaCtcc,dsCtcc.get(i));
+        setEvent(viewHolder.btnSuaCtcc, dsCtcc.get(i));
         return convertView;
     }
 
@@ -78,14 +78,14 @@ public class CTChamCongAdapter extends BaseAdapter {
         btnSuaCtcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BottomSheetDialog dialog = new BottomSheetDialog(context,R.style.Theme_Design_BottomSheetDialog);
-                View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_sua_ctcc,null);
+                BottomSheetDialog dialog = new BottomSheetDialog(context, R.style.Theme_Design_BottomSheetDialog);
+                View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_sua_ctcc, null);
 
                 TextView txtTenSPSua = dialogView.findViewById(R.id.txtTenSPSua);
                 EditText editSoTP = dialogView.findViewById(R.id.editSoTP);
-                EditText editSoPP= dialogView.findViewById(R.id.editSoPP);
-                ImageView imgSpSua= dialogView.findViewById(R.id.imgSanPhamSua);
-                Button btnXacNhanSua =dialogView.findViewById(R.id.btnXacNhanSua);
+                EditText editSoPP = dialogView.findViewById(R.id.editSoPP);
+                ImageView imgSpSua = dialogView.findViewById(R.id.imgSanPhamSua);
+                Button btnXacNhanSua = dialogView.findViewById(R.id.btnXacNhanSua);
 
                 Picasso.get().load(ctcc.getSp().getImg()).into(imgSpSua);
                 txtTenSPSua.setText(ctcc.getSp().getTenSP());
@@ -98,8 +98,7 @@ public class CTChamCongAdapter extends BaseAdapter {
                         new AlertDialog.Builder(context)
                                 .setTitle("Sửa sản phẩm chấm công")
                                 .setMessage("Lưu ý, thông tin chi tiết chấm công này sẽ bị thay đổi")
-                                .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener()
-                                {
+                                .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dl, int which) {
                                         int soTP = Integer.parseInt(String.valueOf(editSoTP.getText()));
@@ -109,8 +108,8 @@ public class CTChamCongAdapter extends BaseAdapter {
                                         ctcc.setSoPP(soPP);
 
                                         DAO dao = new DAO();
-                                        dao.suaCtChamCong(context,ctcc);
-                                        reload();
+                                        dao.suaCtChamCong(context, ctcc);
+                                        reload(ctcc.getMaCC());
                                         dialog.dismiss();
                                     }
 
@@ -129,14 +128,14 @@ public class CTChamCongAdapter extends BaseAdapter {
         viewHolder.txtTenSp.setText(ctcc.getSp().getTenSP());
         viewHolder.txtTienCong.setText(String.valueOf(ctcc.getTienCong()));
         Picasso.get().load(ctcc.getSp().getImg()).into(viewHolder.imgSanPham);
-        viewHolder.txtDonGia.setText(ctcc.getSp().getDonGia()+"đ");
+        viewHolder.txtDonGia.setText(ctcc.getSp().getDonGia() + "đ");
         viewHolder.txtSoTP.setText(String.valueOf(ctcc.getSoTP()));
         viewHolder.txtSoPP.setText(String.valueOf(ctcc.getSoPP()));
     }
 
-    public void reload(){
+    public void reload(String macc) {
         DAO dao = new DAO();
-        dsCtcc = dao.getDsCtChamCong(context,dsCtcc.get(0).getMaCC());
+        dsCtcc = dao.getDsCtChamCong(context, macc);
         notifyDataSetChanged();
     }
 }
